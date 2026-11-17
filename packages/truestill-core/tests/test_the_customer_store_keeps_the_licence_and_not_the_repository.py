@@ -167,7 +167,9 @@ def test_issuing_twice_against_one_order_reference_is_refused(
     licences.issue(db, _args(key, order_ref="PAD-1"))
 
     with pytest.raises(licences.StoreError) as refused:
-        licences.issue(db, _args(key, order_ref="PAD-1", name="Someone Else", email="e@x.com"))
+        licences.issue(
+            db, _args(key, order_ref="PAD-1", name="Someone Else", email="e@example.invalid")
+        )
 
     assert "already belongs to licence" in str(refused.value)
     assert "reissue --order-ref PAD-1" in str(refused.value)
@@ -280,7 +282,7 @@ def test_correcting_an_email_re_signs_the_same_licence_and_the_old_token_still_l
     Both halves are asserted because only asserting the new token would leave the expensive half
     undocumented and un-noticed.
     """
-    typo, row = licences.issue(db, _args(key, email="ada@exmaple.com"))
+    typo, row = licences.issue(db, _args(key, email="ada@exmaple.invalid"))
     db.execute(
         "UPDATE accounts SET email = ? WHERE account_id = ?",
         ("ada@example.com", row["account_id"]),
@@ -296,7 +298,7 @@ def test_correcting_an_email_re_signs_the_same_licence_and_the_old_token_still_l
     assert new.payload.licence == old.payload.licence, "correcting an email changed the licence"
     # The expensive half: the file already sent still verifies and still says the typo.
     assert old.state is LicenceState.ACTIVE
-    assert old.payload.email == "ada@exmaple.com"
+    assert old.payload.email == "ada@exmaple.invalid"
 
 
 # --- a deletion request ----------------------------------------------------------------------
@@ -423,7 +425,7 @@ def test_both_tools_sign_through_the_same_function(key: Path) -> None:
         "sub": "a",
         "lic": "l",
         "name": "N",
-        "email": "e@x.com",
+        "email": "e@example.invalid",
         "edition": "pro",
         "covers_through": licence_module.BUILD_EPOCH,
         "issued_at": "2026-09-11",

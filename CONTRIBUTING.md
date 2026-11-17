@@ -45,9 +45,9 @@ make e2e-install && make frontend-install          # browsers and npm ci, once
 not committed: `make e2e` builds it first, and a test compares the served bundle's digest with the
 frontend sources.
 
-- **The pre-commit hooks are NINE: ruff, ruff-format, mypy, three prose guards (`dash-style`,
-  `product-name`, `no-redirect-artifacts`), two commit-msg guards (`no-ai-coauthor`,
-  `entry-closure`) and the pre-push `push-gate`. They do not run the suite, and their green
+- **The pre-commit hooks are TEN: `gitleaks` (secrets in the staged changes), ruff, ruff-format,
+  mypy, three prose guards (`dash-style`, `product-name`, `no-redirect-artifacts`), two commit-msg
+  guards (`no-ai-coauthor`, `entry-closure`) and the pre-push `push-gate`. They do not run the suite, and their green
   output is not the gate.** `make check` is. The sentence is pinned to `.pre-commit-config.yaml`
   by `test_the_hook_census_is_not_a_guess.py`.
 
@@ -65,6 +65,7 @@ Each row is what CI runs, in the job named in the last column.
 | All of the above, locally, under the 90 s ceiling | `make check` | check |
 | Iterate on the browser lane (chromium, parallel) | `make e2e-loop` | - |
 | Run the browser lane once before a commit (both engines, parallel) | `make e2e-fast` | e2e (nightly) |
+| Scan the staged changes for secrets, with `.gitleaks.toml` (CI scans the full history through Vercroft's shared workflow) | `uv run prek run gitleaks` | Secret scan / Full history |
 
 `make check` runs before every commit. Capture its exit code; never pipe it into `tail`, which
 returns zero on a red suite.

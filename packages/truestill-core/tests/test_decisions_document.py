@@ -147,7 +147,7 @@ def test_the_document_never_carries_a_path_hint() -> None:
         drive_label="Output",
         settings={
             "layout_template": "{yyyy}",
-            "path_hint.drive.19411f16": "/home/someone/Photos/Backup",
+            "path_hint.drive.19411f16": "/home/user/Photos/Backup",
         },
         written="2026-08-09T12:00:00+00:00",
     )
@@ -158,7 +158,7 @@ def test_the_document_never_carries_a_path_hint() -> None:
     # A neutral path, deliberately: writing a real home directory into a public
     # repository - inside the test that exists to stop personal paths leaking - is the
     # same mistake one layer up. The repo's own naming guard caught it.
-    assert "/home/someone" not in text
+    assert "/home/user" not in text
     assert "layout_template" in text, "the exclusion took the whole section with it"
 
 

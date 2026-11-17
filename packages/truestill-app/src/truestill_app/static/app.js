@@ -28,7 +28,7 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const nfmt = (n) => Number(n).toLocaleString();
 // An email in a 272px rail is one unbreakable token, and `overflow-wrap: anywhere` breaks it at
 // whatever character happens to land on the edge. Measured with a real address:
-// a 30-character address split as `...@outlook.co` / `m` - one orphaned letter on its own line,
+// a 30-character address split before its last letter - one orphaned letter on its own line,
 // directly under the name of the person who had just paid for this. `<wbr>` offers the browser somewhere sensible to break, so
 // it splits at the `@` or a dot instead; `overflow-wrap` stays as the fallback for a local part
 // with no punctuation in it at all. Escaped FIRST, then marked: `esc` does not touch `@` or `.`,

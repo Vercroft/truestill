@@ -26,7 +26,7 @@ from typing import Any
 from e2e_support import open_backups
 from playwright.sync_api import Page, expect
 
-_CLOUD = "/home/someone/BigCloudProvider/Photos"
+_CLOUD = "/home/user/BigCloudProvider/Photos"
 
 
 def _drive(label: str, uuid: str, path: str, **over: Any) -> dict[str, Any]:

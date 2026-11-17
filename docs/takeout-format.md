@@ -111,12 +111,9 @@ to bake recovered metadata into the organized copy.
 - GooglePhotosTakeoutHelper #353 - supplemental-metadata rename & truncation:
   <https://github.com/TheLastGimbus/GooglePhotosTakeoutHelper/issues/353>
 - immich-go #652 / metadata-extraction - supplemental handling, matching ladder:
-  <https://github.com/simulot/immich-go/issues/652> ·
-  <https://deepwiki.com/simulot/immich-go/4.1-metadata-extraction>
+  <https://github.com/simulot/immich-go/issues/652>
 - ente #4953 - real-world supplemental-metadata import breakage:
   <https://github.com/ente/ente/issues/4953>
 - Metadata Fixer - JSON schema, duplicate-photo explanation:
   <https://metadatafixer.com/learn/google-takeout-json-files-explained> ·
   <https://metadatafixer.com/learn/google-takeout-duplicate-photos-explained>
-- google-photos-metadata-fix - Takeout structure (year vs album folders):
-  <https://deepwiki.com/joshua-holmes/google-photos-metadata-fix/9.1-google-takeout-structure>
