@@ -771,3 +771,20 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+
+  # Static analysis of the workflows (engineering-practices 7B.7), from a hash-pinned zizmor.
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Audit the workflows
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet --require-hashes -r .github/requirements/zizmor.txt
+          "$RUNNER_TEMP/venv/bin/zizmor" --offline .github/workflows
