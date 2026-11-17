@@ -53,7 +53,9 @@ frontend sources.
 
 ## Commands
 
-Each row is what CI runs, in the job named in the last column.
+Each row is what CI runs, in the job named in the last column. The required checks are `Gate summary`,
+which passes only when every CI job passed or was skipped, the secret scan, CodeQL and the link
+check.
 
 | To | Run | CI job |
 |---|---|---|
@@ -65,6 +67,8 @@ Each row is what CI runs, in the job named in the last column.
 | All of the above, locally, under the 90 s ceiling | `make check` | check |
 | Iterate on the browser lane (chromium, parallel) | `make e2e-loop` | - |
 | Run the browser lane once before a commit (both engines, parallel) | `make e2e-fast` | e2e (nightly) |
+| Audit the workflows (set up once: `VENV="${TMPDIR:-/tmp}/truestill-ci-venv"; python3 -m venv "$VENV"; "$VENV/bin/pip" install --require-hashes -r .github/requirements/zizmor.txt`) | `"$VENV/bin/zizmor" --offline .github/workflows` | zizmor |
+| Check the links between the repository's own files | `lychee --offline --no-progress './**/*.md'` | Local links |
 | Scan the staged changes for secrets, with `.gitleaks.toml` (CI scans the full history through Vercroft's shared workflow) | `uv run prek run gitleaks` | Secret scan / Full history |
 
 `make check` runs before every commit. Capture its exit code; never pipe it into `tail`, which
@@ -83,7 +87,11 @@ returns zero on a red suite.
 | `tests/golden/` | The date resolver's snapshot over a real library, checked on demand |
 | `docs/` | Decisions, the two standards, the frontend contract, the design system, performance, brand and user guides |
 | `brand/` | The brand artwork and its provenance |
-| `.github/` | CI, the release workflow and the issue templates |
+| `.gitleaks.toml`, `.gitleaksignore`, `.pre-commit-config.yaml` | The secret and personal-data rules, the history findings that are not secrets, and the git hooks |
+| `.github/workflows/` | CI with its Gate summary, the release, the secret scan, CodeQL, Scorecard and the link checks |
+| `.github/requirements/` | Hash-pinned CI tools (zizmor) |
+| `.github/ISSUE_TEMPLATE/` | The bug report and idea forms |
+| `.github/dependabot.yml` | Monthly grouped updates for the actions, the Python and npm packages and the CI tools |
 
 ## Working rules
 
