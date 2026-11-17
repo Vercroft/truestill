@@ -91,3 +91,38 @@ def _isolate_app_dirs(
     # that sets its own override on top of this one is unwound in the right order.
     monkeypatch.setenv(DATA_DIR_ENV, str(root / "data"))
     monkeypatch.setenv(CACHE_DIR_ENV, str(root / "cache"))
+
+
+#: The identity every throwaway repository commits as. ``.invalid`` is reserved and never a real address.
+GIT_TEST_IDENTITY = ("Truestill test", "test@example.invalid")
+
+
+@pytest.fixture(scope="session")
+def _empty_git_config(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    path = Path(tmp_path_factory.mktemp("git-config")) / "empty.gitconfig"
+    path.write_text("", encoding="utf-8")
+    return path
+
+
+@pytest.fixture(autouse=True)
+def _isolate_git_config(_empty_git_config: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Every git the suite runs reads no configuration but the repository's own.
+
+    A developer's global and system configuration, and configuration passed in the environment,
+    can carry an identity scoped to certain remotes, hooks that refuse unapproved authors, or a
+    signing key; a throwaway repository then cannot commit, and tests fail for reasons outside
+    the code. So the global file is an empty one, the system file is skipped, the environment's
+    ``GIT_CONFIG_*`` entries are removed, and commits use a fixed test identity. Nothing sets a
+    hooks path, so only hooks a test installs in its own repository run.
+    """
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(_empty_git_config))
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    for name in list(os.environ):
+        if name in {"GIT_CONFIG_PARAMETERS", "GIT_CONFIG_COUNT"} or name.startswith(
+            ("GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_")
+        ):
+            monkeypatch.delenv(name)
+    name, email = GIT_TEST_IDENTITY
+    for role in ("AUTHOR", "COMMITTER"):
+        monkeypatch.setenv(f"GIT_{role}_NAME", name)
+        monkeypatch.setenv(f"GIT_{role}_EMAIL", email)
