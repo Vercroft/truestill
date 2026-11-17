@@ -1,7 +1,7 @@
-"""`CLAUDE.md`'s hook sentence is checked against `.pre-commit-config.yaml`. `(ago)`'s shape.
+"""`CONTRIBUTING.md`'s hook sentence is checked against `.pre-commit-config.yaml`. `(ago)`'s shape.
 
 ⚠ **THE SENTENCE DRIFTED TWICE, AND BOTH TIMES IN THE PARAGRAPH WHOSE SUBJECT IS THAT FAILURE.**
-It is the entry point's warning that *"the hooks print a column of green immediately above the
+It is the working guide's warning that *"the hooks print a column of green immediately above the
 commit, `make check` does not, and the eye takes the nearer one"*.
 
 * **2026-08-24** - the list omitted `push-gate`, the **only hook in that column with the power to
@@ -11,7 +11,7 @@ commit, `make check` does not, and the eye takes the nearer one"*.
   word **EIGHT** in front of a list of nine. The number and the list it introduced disagreed for
   two days.
 
-⚠ **`CLAUDE.md:207` SAID *"NOTHING PINS THIS SENTENCE"* AND IT WAS RIGHT.** `(ago)` ruled that a
+⚠ **THE WORKING GUIDE SAID *"NOTHING PINS THIS SENTENCE"* AND IT WAS RIGHT.** `(ago)` ruled that a
 census guard is a new artifact and has to earn itself; the ruling was applied and the answer was
 *record it, do not guard it*. **Two drifts in the same paragraph is the evidence that ruling asked
 for**, so this file exists now and did not before.
@@ -30,7 +30,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
 CONFIG = ROOT / ".pre-commit-config.yaml"
-CLAUDE_MD = ROOT / "CLAUDE.md"
+CONTRIBUTING_MD = ROOT / "CONTRIBUTING.md"
 
 #: The bullet, found by its opening rather than by line number - it has moved twice already.
 _SENTENCE = re.compile(r"- \*\*The pre-commit hooks are ([A-Z]+):(.*?)\*\*", re.DOTALL)
@@ -50,9 +50,9 @@ _NUMBER_WORDS = {
 
 
 def _declared() -> tuple[str, str]:
-    match = _SENTENCE.search(CLAUDE_MD.read_text(encoding="utf-8"))
+    match = _SENTENCE.search(CONTRIBUTING_MD.read_text(encoding="utf-8"))
     assert match is not None, (
-        "CLAUDE.md no longer contains a '- **The pre-commit hooks are <WORD>: ...**' bullet. "
+        "CONTRIBUTING.md no longer contains a '- **The pre-commit hooks are <WORD>: ...**' bullet. "
         "If the sentence was reworded, reword this guard with it; if it was deleted, delete this "
         "file - a guard nobody retires is how a dead check outlives its subject."
     )
@@ -78,7 +78,7 @@ def test_the_stated_number_is_the_number_of_hooks() -> None:
     expected = _NUMBER_WORDS.get(len(ids))
     assert expected is not None, f"{len(ids)} hooks and no word for it; extend _NUMBER_WORDS"
     assert word == expected, (
-        f"CLAUDE.md says the hooks are {word}; .pre-commit-config.yaml declares {len(ids)} "
+        f"CONTRIBUTING.md says the hooks are {word}; .pre-commit-config.yaml declares {len(ids)} "
         f"({expected}): {', '.join(ids)}. The number and the list must move together - they did "
         f"not on 2026-08-24 or on 2026-08-26."
     )
@@ -100,7 +100,7 @@ def test_every_hook_is_named_in_the_sentence() -> None:
         if not re.search(rf"(?<![\w-]){re.escape(hook_id)}(?![\w-])", body)
     ]
     assert not missing, (
-        f"these hooks run and CLAUDE.md's sentence does not name them: {', '.join(missing)}. "
+        f"these hooks run and CONTRIBUTING.md's sentence does not name them: {', '.join(missing)}. "
         f"A hook absent from the list is one nobody knows fires - and `push-gate` was absent "
         f"from it for two days while being the only one that can stop a push."
     )
