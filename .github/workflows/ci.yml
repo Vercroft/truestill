@@ -800,3 +800,29 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/venv"
           "$RUNNER_TEMP/venv/bin/pip" install --quiet --require-hashes -r .github/requirements/zizmor.txt
           "$RUNNER_TEMP/venv/bin/zizmor" --offline .github/workflows
+
+  # The one CI check the ruleset requires. Matrix check names carry the OS and the Python version
+  # and change with them; this name does not. `if: always()` so a failed job cannot skip it, and
+  # it fails unless every job it needs passed or was skipped (e2e is skipped on pull requests).
+  # `test_the_gate_summary_needs_every_job.py` fails when a job in this file is missing from `needs`.
+  gate-summary:
+    name: Gate summary
+    if: always()
+    needs: [check, e2e, zizmor]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Require every needed job to have passed or been skipped
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          results = {job: need["result"] for job, need in json.loads(os.environ["NEEDS_JSON"]).items()}
+          for job, result in sorted(results.items()):
+              print(f"{job}: {result}")
+          bad = sorted(f"{job}={result}" for job, result in results.items() if result not in ("success", "skipped"))
+          if not results or bad:
+              sys.exit("not every needed job passed or was skipped: " + (", ".join(bad) or "no jobs"))
+          PY
