@@ -95,7 +95,7 @@ CANCEL_OVERRIDE = "TRUESTILL_PUSH_CANCELS_THE_RUN"
 
 #: Contention WAITS, bounded, instead of refusing outright - re-ruled in P38 against P33's
 #: refusal. P33 cited the reasoning behind `IMPLEMENTATION_STANDARDS.md` §6.1: a blocking hook
-#: gets `--no-verify`d by a human who can simply try again. The agent now pushes for itself, so
+#: gets `--no-verify`d by a human who can simply try again. Pushes are now automated, so
 #: a refusal costs a full round trip while a bounded wait costs minutes of hook time - the
 #: economics reversed with the operator. A push lane measures ~3 minutes; the
 #: bound is double that plus slack. **At the bound it REFUSES** - never pushes, never cancels -
@@ -247,7 +247,7 @@ def contention(branch: str) -> str | None:
     """A refusal if a push run is in flight on ``branch`` and stays in flight past the bound.
 
     ⚠ **Waits before refusing** (P38, the re-ruling recorded at `CONTENTION_WAIT_SECONDS`): the
-    ordinary case is a run minutes from concluding, and with the agent as the operator a refusal
+    ordinary case is a run minutes from concluding, and with automation as the operator a refusal
     costs a round trip the wait does not. At the bound it refuses - never cancels.
     """
     asked, run = _live_push_run(branch)

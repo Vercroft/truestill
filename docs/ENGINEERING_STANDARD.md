@@ -171,8 +171,8 @@ re-implementing something the repo already has.
 
 ### 3.1 No paid third-party research or tooling (standing, 2026-07-30)
 
-**Do not use, authenticate, or suggest any paid third-party service** for research or agent
-work. That includes parallel.ai, commercial research APIs, hosted tools that require an
+**Do not use, authenticate, or suggest any paid third-party service** for research or
+automation. That includes commercial research APIs, hosted tools that require an
 account or API key, and anything that would add a paid dependency or credential prompt. This
 is **in addition to** the no-new-dependency rule (§4 Dependencies): even a free trial that
 needs signup is out.

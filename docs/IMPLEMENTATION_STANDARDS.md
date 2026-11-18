@@ -1505,8 +1505,9 @@ That ratio is the entire argument, and it is the reason the change is safe:
 > twenty-seventh member, *"consulting it was voluntary"*.
 
 ⚠ **NOTHING HERE IS OPTIONAL, AND NOTHING MOVED.** §9 stays in this document, still binding, and
-`IMPLEMENTATION_STANDARDS.md` still wins on any conflict. A **skill was refused** for exactly this
-reason (P210): a skill loads when an agent judges it relevant, which converts a rule into a hint.
+`IMPLEMENTATION_STANDARDS.md` still wins on any conflict. Moving it into an on-demand
+guide **was refused** for exactly this reason (P210): a guide loaded only when the reader judges
+it relevant converts a rule into a hint.
 What changed is how much of this section a session reads *before it knows the task* - not the
 standing of one word in it.
 

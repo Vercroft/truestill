@@ -168,7 +168,7 @@ def test_the_wait_rides_out_a_run_that_concludes(
     gate: Any, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """The bound's useful half (P38): the ordinary case is a run minutes from green, and with
-    the agent as operator a refusal there costs a round trip the wait does not."""
+    automation as operator a refusal there costs a round trip the wait does not."""
     _fast_wait(gate, monkeypatch)
     live = _table(_run(_OTHER, "in_progress", None), _run(_SHA, "completed", "success"))
     done = _table(_run(_OTHER, "completed", "success"), _run(_SHA, "completed", "success"))

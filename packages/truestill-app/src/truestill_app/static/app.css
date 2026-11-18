@@ -509,7 +509,7 @@ code,
 .account-slot:not(:empty) + .custody {
   margin-top: 0;
 }
-/* QUIET ACCOUNT ROW - Cursor-style presence, not a developer panel.
+/* QUIET ACCOUNT ROW - an editor-style presence, not a developer panel.
    At rest: one compact row (state + what remains). Border and fill only as light chrome;
    the disclosure carries path, picker and sign-out. */
 .account-acct {
@@ -558,7 +558,7 @@ code,
 .account-acct:not([open]) > .account-body {
   display: none;
 }
-/* A DOT, NOT AN AVATAR. `(aam)` names Cursor as the model, which shows a photograph; there is no
+/* A DOT, NOT AN AVATAR. `(aam)` names a code editor as the model, which shows a photograph; there is no
    photograph here and inventing initials in a circle would be identity theatre for a local tool.
    One dot carrying the state colour says the same thing in 8px and can never be wrong. */
 /* ⚠ **CONTRAST WAS NEVER THIS DOT'S PROBLEM, AND MAKING GREY BRIGHTER WOULD HAVE SOLVED
