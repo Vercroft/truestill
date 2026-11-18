@@ -15,9 +15,9 @@ members = ["packages/*"]
 # dependency was added.
 [dependency-groups]
 dev = [
-    "ruff>=0.16.0",
-    "mypy>=2.3.0",
-    "pytest>=9.1.1",
+    "ruff>=0.17.4",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
     "pytest-cov>=7.1.0",
     # Parallel test execution. Measured on this suite: 1,968 tests, 89.95s serial -> 30.00s at
     # `-n auto` on 16 cores, zero failures. It is safe here for a reason that predates it: the
@@ -28,7 +28,7 @@ dev = [
     # engineered against for an unrelated reason.
     # NOT applied to the collection-order pass: see the Makefile's `test-order`.
     "pytest-xdist>=3.8.0",
-    "prek==0.5.7",
+    "prek==0.5.10",
     # Read by tests that parse .pre-commit-config.yaml and the CI workflows. Declared here because it used to
     # arrive only through pre-commit, which prek replaced.
     "pyyaml>=6.0.3",
@@ -44,12 +44,12 @@ dev = [
     # land on 2.9.1 - CVE-2026-84378/84379/84380/84382 (httpx2) and CVE-2026-84381 (httpcore2) -
     # fixed across 2.10.0, 2.11.0 and 2.12.0, so 2.12.0 is the first version clear of all five.
     # A lock bump alone would be undone by the next `uv lock` that resolves the old floor.
-    "httpx2>=2.12.0",
+    "httpx2>=2.16.0",
     # Browser E2E (tests/e2e). The only tool that can execute the client-side JS layer, where
     # every UI bug the soak found actually lived -- a layer pytest alone cannot reach and
     # manual checking cannot regression-pin. Dev group only: it is never a runtime dependency
     # of truestill-core/-cli/-app, and a clean install of any of them pulls no browsers.
-    "pytest-playwright>=0.8.0",
+    "pytest-playwright>=0.10.0",
     # THE BUILD-ONLY bundler. Dev group, never a runtime dependency: it produces an artifact and
     # is absent from it. Per the ruling of 2026-07-31, a build tool that never enters the runtime
     # graph does not carry the §4 written-justification burden a shipped dependency does - it
@@ -62,7 +62,7 @@ dev = [
     # '>=3.13'`. D9 publishes two platforms and briefcase produces nothing on one of them, so the
     # comparison it existed to run is settled and cannot be reopened by preference. The last
     # clause above ("deleted with the job that uses it") is the rule being applied, not waived.
-    "pyinstaller>=6.21.0",
+    "pyinstaller>=6.22.3",
     # PE reader for `packaging/verify_icon.py`, which asserts the SHIPPED executable carries the
     # mark in `brand/`. It already arrives transitively with PyInstaller (win32 only), and §7's
     # rule is that what we import, we declare - the numpy row's exact reasoning, since a
@@ -75,7 +75,7 @@ dev = [
     # A JSON Schema EMITTER for the payload contract (`scripts/emit_openapi.py`, `(ahn)` stage C),
     # not a model layer: it defines no model, validates nothing, and the app never imports it.
     # `packages/truestill-app/pyproject.toml` refuses Pydantic *for our models*; this is not that.
-    "msgspec>=0.21.1",
+    "msgspec>=0.22.0",
 ]
 
 # --- Ruff (lint + format), applied repo-wide ------------------------------------------
