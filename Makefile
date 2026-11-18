@@ -255,14 +255,14 @@ frontend:
 	cd packages/truestill-app/frontend && npm run build
 
 # --- look at the product ---------------------------------------------------------------
-# A SCRATCH LIBRARY FOR LOOKING AT THE PRODUCT, NOT A FIXTURE. `/data/TruestillLibrary/look` is
-# 261 real files copied out of the maintainer's library on 2026-09-05 for variety - fourteen
-# years, portrait and landscape and square, six videos, thirteen undated, a truncated JPEG and an
-# unreadable one - organized once into `Library/` with the catalog beside it. Nothing here can
+# A SCRATCH LIBRARY FOR LOOKING AT THE PRODUCT, NOT A FIXTURE. `LOOK_ROOT` holds a few hundred
+# real files chosen for variety - many years, portrait and landscape and square, videos, undated
+# files, a truncated JPEG and an unreadable one - organized once into `Library/` with the catalog
+# beside it. Set `LOOK_ROOT` to your own; the default is under `$TMPDIR`. Nothing here can
 # reach the dev catalog or a real library: the catalog, the data dir and the cache dir all live
 # under that one folder, and the port is not the dev default. One command, then open the URL it
 # prints. No test reads this folder and none may: it is a snapshot, never a premise.
-LOOK_ROOT ?= /data/TruestillLibrary/look
+LOOK_ROOT ?= $(or $(TMPDIR),/tmp)/truestill-look
 look: frontend
 	@test -f $(LOOK_ROOT)/catalog.sqlite || { echo "no look library at $(LOOK_ROOT) (LOOK_ROOT=... to point elsewhere)"; exit 1; }
 	TRUESTILL_DATA_DIR=$(LOOK_ROOT)/data TRUESTILL_CACHE_DIR=$(LOOK_ROOT)/cache \

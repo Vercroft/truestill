@@ -14,7 +14,7 @@ removed, then every `source -> source` transition as a count, then date-only and
 drift counts, then at most `EXAMPLE_CAP` example lines per bucket. A rule change that moves
 40,000 files must read as one line saying so, never as 40,000 lines.
 
-⚠ **ON DEMAND ONLY, NEVER CI.** The corpus is a real machine's `/data/TruestillLibrary/Input`;
+⚠ **ON DEMAND ONLY, NEVER CI.** The corpus is a real machine's `/data/Library/Input`;
 a runner does not have it, so the committed snapshot is evidence, not coverage -
 `tests/golden/README.md` is the statement of that limit. Moves nothing, writes nothing under
 the root; the only write is the snapshot file, and only under `record`.
@@ -37,7 +37,6 @@ from truestill_core.exif import read_metadata
 from truestill_core.organizer import plan, scan_source
 from truestill_core.progress import Progress
 
-DEFAULT_ROOT = Path("/data/TruestillLibrary/Input")
 DEFAULT_SNAPSHOT = ROOT / "tests" / "golden" / "input-dates.tsv"
 
 #: Per-bucket example ceiling in `check` output. The summary is the deliverable; examples are
@@ -120,12 +119,11 @@ def render(rows: list[Row], root: Path) -> str:
     dist_line = " ".join(f"{source}={count}" for source, count in sorted(dist.items()))
     header = [
         "# golden corpus snapshot - what the date resolver decided, file by file",
-        "# regenerate: uv run python scripts/golden_corpus.py record",
-        "# compare:    uv run python scripts/golden_corpus.py check",
+        "# regenerate: uv run python scripts/golden_corpus.py record --root <corpus>",
+        "# compare:    uv run python scripts/golden_corpus.py check --root <corpus>",
         "# ON DEMAND ONLY - the corpus is one real machine's Input; CI never runs this and",
         "# this file is not CI coverage. tests/golden/README.md states the limit.",
-        f"# root: {root}",
-        f"# machine: {platform.node()} {platform.system().lower()} {platform.release()}",
+        f"# machine: {platform.system().lower()} {platform.release()}",
         f"# filesystem: {_filesystem_of(root)}",
         f"# files: {len(rows)}",
         f"# distribution: {dist_line}",
@@ -213,7 +211,7 @@ def format_drift(drift: Drift) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=("record", "check"))
-    parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
+    parser.add_argument("--root", type=Path, required=True, help="the corpus to snapshot")
     parser.add_argument("--snapshot", type=Path, default=DEFAULT_SNAPSHOT)
     args = parser.parse_args(argv)
 

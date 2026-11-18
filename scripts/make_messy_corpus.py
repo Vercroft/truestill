@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Manufacture the mess a real user has, from real photographs, deterministically.
 
-**Why this exists.** Ad's library is realistic in scale and format and **not** in mess: measured
+**Why this exists.** The maintainer's library is realistic in scale and format and **not** in mess: measured
 2026-08-29, the personal material is 7,527 files of which 7,436 (98.8%) are ``.jpg``, with 54
 duplicate basenames in the whole tree, and soak five put the duplication rate at 35 exact
 duplicates in 10,745 files. Six soaks varied *what the product was asked to do* - scale, refusal,
@@ -33,7 +33,7 @@ by the day the tree happened to be built.
 
 ⚠ **Two tiers of reproducibility, and the manifest records which one each row came from.**
 The corpus doctrine rules that the two format repos are *"version-controlled and reproducible anywhere,
-so a finding against them is citable by commit"*, while any observation of ``TruestillLibrary`` is
+so a finding against them is citable by commit"*, while any observation of a real library is
 *"a SNAPSHOT - never a fixture, never a design premise"*. A finding against a row whose source is
 a format repo is reproducible by anyone; one against a personal-photo row is reproducible only on
 this machine.
@@ -61,9 +61,6 @@ IMAGE_SUFFIXES: Final[frozenset[str]] = frozenset(
     {".jpg", ".jpeg", ".png", ".heic", ".tif", ".tiff"}
 )
 
-#: The default output root. Never ``/tmp`` - that is tmpfs, i.e. RAM, and this tree is tens of
-#: gigabytes (``suite_scratch.py``'s recorded decision, reaching one layer further).
-DEFAULT_OUT: Final[Path] = Path("/data/tmp/truestill/messy")
 
 #: How many times one photograph is copied for the many-way shape. From the field report of a
 #: backup in which a single file appeared this many times.
@@ -409,7 +406,7 @@ def _s9_case_collision(writer: CorpusWriter, sample: Sequence[Path]) -> None:
 
 
 def _s11_windows_artifacts(writer: CorpusWriter) -> None:
-    """Present in Ad's library as a trace (9 ``.db``, 11 ``.ini``); here as a population."""
+    """Present in the maintainer's library as a trace (9 ``.db``, 11 ``.ini``); here as a population."""
     for folder in ("DriveA/Pictures", "DriveB/My Pictures", "DriveA/Picasa/Album 2009"):
         writer.write_bytes(
             b"\x00\x00\x00\x00thumbs", f"{folder}/Thumbs.db", shape="S11", role="artifact"
@@ -484,7 +481,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--source", type=Path, required=True, help="READ-ONLY library to derive from"
     )
-    parser.add_argument("--out", type=Path, default=DEFAULT_OUT, help="corpus root (created)")
+    # Never under a tmpfs ``/tmp``: this tree is tens of gigabytes of RAM there
+    # (``suite_scratch.py``'s recorded decision, reaching one layer further).
+    parser.add_argument("--out", type=Path, required=True, help="corpus root (created; not tmpfs)")
     parser.add_argument("--seed", type=int, default=20260829, help="decides every sample; cite it")
     parser.add_argument("--files", type=int, default=60, help="base photographs to sample")
     args = parser.parse_args(argv)

@@ -1,7 +1,7 @@
 """The golden-corpus differential summarizes before it itemizes. `(P29)` tooling.
 
 ⚠ **The snapshot itself is NOT CI coverage and cannot be** - the corpus is one real machine's
-`/data/TruestillLibrary/Input`, so `tests/golden/input-dates.tsv` is evidence a human
+`/data/Library/Input`, so `tests/golden/input-dates.tsv` is evidence a human
 regenerates on demand (`tests/golden/README.md` states the limit). What CI can and does own
 is the differential logic: that a rule change moving thousands of files reads as one counted
 line per transition, never as thousands of printed paths.

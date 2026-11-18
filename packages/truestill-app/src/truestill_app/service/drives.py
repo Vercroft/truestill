@@ -739,8 +739,8 @@ def _the_library(catalog: Catalog, libraries: set[str], declared: str | None) ->
     if declared:
         # ⚠ **`is_same_location`, NEVER a string compare, and this shipped wrong.** The declared
         # root and the remembered hint are two things a person typed at different times, and on
-        # this maintainer's own machine `/home/dinesh/TruestillLibrary` is a symlink to
-        # `/data/TruestillLibrary` - both real, both typed, one folder. String equality ignored
+        # this maintainer's own machine `~/Library` is a symlink to
+        # `/data/Library` - both real, both typed, one folder. String equality ignored
         # the user's explicit declaration and left the cards blank.
         for uuid in libraries:
             remembered = catalog.get_setting(drive_path_hint(uuid))

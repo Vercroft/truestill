@@ -3269,7 +3269,7 @@ and counts are the one thing this section has drifted on repeatedly. Search the 
   recorded 2026-09-05, twice in one afternoon.
 
   **The tell.** A tool call that exits 144 with no output, after the process it named is gone.
-  `pkill -f 'truestill-app --db /data/TruestillLibrary/look ...'` was run from a shell whose own
+  `pkill -f 'truestill-app --db $LOOK_ROOT/catalog.sqlite ...'` was run from a shell whose own
   command line contained that string, because the pattern was written into it. `pkill` matched
   the shell, the shell died mid-command, and everything after the kill in that command - the
   `make check` it was meant to precede - never ran. The second time it took a `for pid in $(pgrep

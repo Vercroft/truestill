@@ -7,11 +7,11 @@ retired the legacy lookup, which removed the only legitimate reason `default_cat
 input was **string shape** - and a symlink anywhere in the data directory produces two spellings
 of one file.
 
-Measured on the maintainer's machine, where `/home/dinesh/TruestillLibrary` is a symlink to
-`/data/TruestillLibrary`::
+Measured on the maintainer's machine, where `~/Library` is a symlink to
+`/data/Library`::
 
-    default  (resolved): /data/TruestillLibrary/.../catalog.sqlite
-    standard (raw)     : /home/dinesh/TruestillLibrary/.../catalog.sqlite
+    default  (resolved): /data/Library/.../catalog.sqlite
+    standard (raw)     : ~/Library/.../catalog.sqlite
     differ: True      same file: True
 
 and `truestill catalog` printed *"This catalog is in the old location"* for a catalog sitting
