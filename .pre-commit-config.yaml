@@ -94,13 +94,13 @@ repos:
         pass_filenames: false
         always_run: true
 
-  # Portable golden rule (docs/GOLDEN_REPO_RULES.md §1): no AI co-author trailer /
-  # Anthropic/Claude email in history. Activate with:
+  # Engineering Practices §6.7 and §6.8: no co-author trailer, generated-by signature or email
+  # address in a commit message. Activate with:
   #   uv run prek install --hook-type commit-msg
   - repo: local
     hooks:
-      - id: no-ai-coauthor
-        name: block AI co-author / Anthropic-Claude signature in commit message
+      - id: commit-message-policy
+        name: no co-author trailer, generated-by signature or email address in a commit message
         entry: python3 scripts/check_commit_msg.py
         language: system
         stages: [commit-msg]

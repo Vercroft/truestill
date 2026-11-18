@@ -47,7 +47,7 @@ frontend sources.
 
 - **The pre-commit hooks are NINE: `gitleaks` (secrets in the staged changes), ruff, ruff-format,
   mypy, three prose guards (`dash-style`, `product-name`, `no-redirect-artifacts`), the commit-msg
-  guard `no-ai-coauthor` and the pre-push `push-gate`. They do not run the suite, and their green
+  guard `commit-message-policy` and the pre-push `push-gate`. They do not run the suite, and their green
   output is not the gate.** `make check` is. The sentence is pinned to `.pre-commit-config.yaml`
   by `test_the_hook_census_is_not_a_guess.py`.
 
