@@ -180,7 +180,7 @@ def test_a_row_without_a_sha_is_not_served_to_a_run_that_needs_one(tmp_path: Pat
 
 
 def test_cleanup_actually_runs(tmp_path: Path) -> None:
-    """PixSort defined `cleanup_stale_entries()` and never called it, so rows accumulated
+    """An earlier prototype defined `cleanup_stale_entries()` and never called it, so rows accumulated
     forever. Pruning here is part of every run, not a method someone must remember."""
     files = _files(tmp_path / "src", 3)
     db = tmp_path / "c.sqlite"

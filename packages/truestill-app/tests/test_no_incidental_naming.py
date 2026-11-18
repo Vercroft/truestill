@@ -10,7 +10,7 @@ the code lie about what it does, and those are allowlisted below with the reason
 
 * **Google Takeout, rclone, exiftool, SQLite, Playwright** - real formats, dependencies and
   tools. Renaming these would misdescribe the feature. They are not in :data:`BANNED` at all.
-* **Cited evidence** - PhotoPrism, Immich, IMatch, PixSort, Lightroom and the rest, where a
+* **Cited evidence** - PhotoPrism, Immich, IMatch, Lightroom and the rest, where a
   docstring cites another tool's behaviour to justify an invariant. `hash_cache.py`'s
   size+mtime rule *is* PhotoPrism's rule, and IMatch is the documented counter-example that
   bounds it. Strip those and the invariant is left with no stated reason, which is the drift

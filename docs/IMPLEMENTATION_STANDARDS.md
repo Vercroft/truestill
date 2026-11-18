@@ -1368,7 +1368,7 @@ algorithm toggle. Full rationale: `DECISIONS.md` **D8**.
     (`test_a_row_without_a_sha_is_not_served_to_a_run_that_needs_one`) - serving it would hand
     back a null hash and break exact dedup.
   - **One layer**, and **cleanup runs on every run** rather than being defined and never called
-    (the PixSort mistake), bounded so it cannot become a stat storm.
+    (an earlier prototype's mistake), bounded so it cannot become a stat storm.
   - **A caller that computes only SOME of a file's hashes must open the cache `writable=False`**
     (added 2026-08-03 for Analyze's tier 2a, which wants SHA-256 without the perceptual hash;
     **`service/drives._copy_hash` was found violating it on 2026-08-07** - it opened
