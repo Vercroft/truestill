@@ -47,7 +47,7 @@ classifiers = [
 # upstream checksums ship beside it. Not a pip dependency; no build step; no network.
 dependencies = [
     "truestill-core",
-    "starlette>=1.3.1",
+    "starlette>=1.10.0",
     "uvicorn>=0.51.0",
 ]
 
