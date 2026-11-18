@@ -4,16 +4,16 @@ This file says how you can help and how work is done in this repository.
 
 ## Licence and contributions
 
-Truestill is source-available under [PolyForm Strict 1.0.0](LICENSE): free for personal and other
-noncommercial use; business use needs a commercial licence. v0.1.0 and v0.1.1 were released under
-Apache-2.0 and stay so.
+Truestill is source-available under [PolyForm Strict 1.0.0](LICENSE), copyright 2026 Vercroft: free
+for personal and other noncommercial use; business use needs a commercial licence. v0.1.0 and
+v0.1.1 were released under Apache-2.0 and stay so.
 
 - **Bug reports and ideas are welcome** in [Issues](https://github.com/Vercroft/truestill/issues).
   The bug report template asks for what is needed to reproduce.
 - **Code contributions are not accepted.** Pull requests are closed without review.
 - Never report a security problem in public: follow [SECURITY.md](SECURITY.md).
 
-The reasoning is recorded in `docs/DECISIONS.md` D22. Internal planning is kept privately.
+The reasoning is recorded in `docs/DECISIONS.md` D22 and D23. Internal planning is kept privately.
 
 ## Rules
 

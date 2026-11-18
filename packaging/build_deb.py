@@ -84,7 +84,7 @@ Section: graphics
 Priority: optional
 Architecture: {arch}
 Depends: perl, hicolor-icon-theme
-Maintainer: truestill <noreply@truestill.invalid>
+Maintainer: Vercroft <noreply@truestill.invalid>
 Homepage: https://github.com/Vercroft/truestill
 Description: Local-first photo organizer, de-duplicator and backup pipeline
  Truestill organises a photo library by the date a picture was actually taken,
@@ -109,7 +109,7 @@ Upstream-Name: truestill
 Source: https://github.com/Vercroft/truestill
 
 Files: *
-Copyright: truestill
+Copyright: 2026 Vercroft
 License: PolyForm-Strict-1.0.0
 
 Files: usr/lib/truestill/_internal/bin/*
@@ -125,7 +125,7 @@ Comment: DejaVu Sans Mono. The notice ships beside the typefaces, which is what
 License: Bitstream-Vera
 
 Files: usr/share/icons/hicolor/*
-Copyright: truestill
+Copyright: 2026 Vercroft
 Comment: The Truestill mark, rendered from brand/truestill-mark.svg. Drawn
  artwork, not a font; see brand/PROVENANCE.md.
 License: PolyForm-Strict-1.0.0

@@ -18,6 +18,8 @@ Every screen has been redrawn.
 - **The source licence is now PolyForm Strict 1.0.0.** Free for personal and other
   noncommercial use; business use needs a commercial licence; code contributions are not accepted.
   v0.1.0 and v0.1.1 were released under Apache-2.0 and stay so.
+- **The copyright holder is Vercroft** (`docs/DECISIONS.md` D23), in every `LICENSE`, the
+  package metadata and the installers.
 
 ### Added
 

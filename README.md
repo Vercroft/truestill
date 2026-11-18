@@ -344,7 +344,7 @@ frontend contract, the design system, performance, brand and user guides.
 
 ## Licence
 
-Truestill is licensed under [PolyForm Strict 1.0.0](LICENSE).
+Truestill is licensed under [PolyForm Strict 1.0.0](LICENSE). Copyright 2026 Vercroft.
 
 - Free for personal and other noncommercial use.
 - Business use needs a separate commercial licence.

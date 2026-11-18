@@ -34,7 +34,7 @@
 AppId={{EA0D2B79-5563-4623-812A-60516EF62F80}
 AppName=Truestill
 AppVersion={#MyAppVersion}
-AppPublisher=truestill
+AppPublisher=Vercroft
 AppPublisherURL=https://github.com/Vercroft/truestill
 DefaultDirName={autopf}\Truestill
 DefaultGroupName=Truestill
