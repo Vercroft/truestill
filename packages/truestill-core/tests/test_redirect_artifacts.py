@@ -47,7 +47,7 @@ def test_lets_ordinary_root_names_through() -> None:
         "Makefile",
         "pyproject.toml",
         ".gitignore",
-        "CLAUDE.md",
+        "CONTRIBUTING.md",
         "SECURITY.md",
     ):
         assert not _mod.is_redirect_artifact_name(name), name

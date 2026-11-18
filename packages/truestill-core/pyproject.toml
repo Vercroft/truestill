@@ -2,7 +2,7 @@
 name = "truestill-core"
 version = "0.1.1"
 description = "Core library: categorize, date, de-duplicate and place media into a Category/YYYY/MM tree."
-authors = [{ name = "Truestill contributors" }]
+authors = [{ name = "Vercroft" }]
 # 3.14 because 3.13 leaves BUGFIX support in October 2026 - two years after its release, when
 # "only security fixes are accepted and no more binaries are released" (devguide). The floor
 # tracks what upstream still builds binaries for, not the last date a CVE would be patched.
@@ -73,8 +73,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/dinesh-ad/truestill"
-Repository = "https://github.com/dinesh-ad/truestill"
+Homepage = "https://github.com/Vercroft/truestill"
+Repository = "https://github.com/Vercroft/truestill"
 
 [build-system]
 requires = ["hatchling"]

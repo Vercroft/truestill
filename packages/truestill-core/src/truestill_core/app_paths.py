@@ -235,7 +235,7 @@ def is_same_file(one: Path, other: Path) -> bool:
 
     **The question actually being asked** whenever code compares one catalog path against another.
     A symlink anywhere in a data directory produces two spellings of one file - measured on the
-    maintainer's machine, where `/home/dinesh/TruestillLibrary` links to `/data/TruestillLibrary`
+    maintainer's machine, where `~/Library` links to `/data/Library`
     and `truestill catalog` duly reported a correctly-placed catalog as being *"in the old
     location"*, advising a `--move` that could not help.
 
@@ -273,8 +273,8 @@ def is_same_location(one: Path, other: Path) -> bool:
     **So: identity first, spelling second.** The inode answer settles the symlink case; the
     lexical answer keeps a not-yet-created path equal to itself.
 
-    **Why this matters here rather than in theory**: `/home/dinesh/TruestillLibrary` is a symlink
-    to `/data/TruestillLibrary` on the maintainer's machine. Both spellings are real, both get
+    **Why this matters here rather than in theory**: `~/Library` is a symlink
+    to `/data/Library` on the maintainer's machine. Both spellings are real, both get
     typed, and they are one folder. `(aeb)` found the first casualty on `truestill catalog`;
     `is_same_file`'s own docstring records it.
 

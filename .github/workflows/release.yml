@@ -63,13 +63,15 @@ jobs:
         # outright; what was never true is that one was being built at all.
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v9.0.0
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        # No cache in a release build: a cache a pull request wrote must never feed a published build.
         with:
-          enable-cache: true
-          cache-dependency-glob: uv.lock
+          enable-cache: false
 
       # ⚠ THE FROZEN BUILD IS THE HALF NO TEST ON A DEVELOPER MACHINE TOUCHES. PyInstaller has
       # supported 3.14 since 6.15.0 (2025-08-03) and declares `<3.16,>=3.8`; that is a claim about
@@ -98,11 +100,10 @@ jobs:
       # definition the Makefile's `frontend` target also runs. `shell: bash` is present on the
       # Windows runner; GNU make is not promised there, which is why this does not go through it.
       - name: Set up Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version-file: packages/truestill-app/frontend/.nvmrc
-          cache: npm
-          cache-dependency-path: packages/truestill-app/frontend/package-lock.json
+          package-manager-cache: false
 
       - name: Build the React bundle
         shell: bash
@@ -267,9 +268,12 @@ jobs:
       # The half the artifact cannot do: are those the bytes this repository built?
       - name: Compare the self-check against the repository
         shell: bash
+        env:
+          EXPECT: ${{ steps.version.outputs.expect }}
+        # $EXPECT is unquoted on purpose: it is empty or the two words `--expect-version X.Y.Z`.
         run: >-
           uv run python packaging/compare_selfcheck.py
-          ${{ steps.version.outputs.expect }} findings/selfcheck-${RUNNER_OS}.json
+          $EXPECT findings/selfcheck-${RUNNER_OS}.json
 
       # THE MARK, ASSERTED ON THE BUILT EXECUTABLE rather than on the flag that was passed or on
       # the file in `brand/`. Both are one step short of the property - see verify_icon.py.
@@ -285,21 +289,25 @@ jobs:
       - name: Build the installer (Inno Setup)
         if: runner.os == 'Windows'
         shell: pwsh
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
         run: |
           choco install innosetup --no-progress -y
           $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'
           if (-not (Test-Path $iscc)) { throw "ISCC.exe not found at $iscc" }
           Copy-Item packaging/installer.iss -Destination installer.iss
-          & $iscc /DMyAppVersion=${{ steps.version.outputs.value }} installer.iss
+          & $iscc "/DMyAppVersion=$env:VERSION" installer.iss
           if ($LASTEXITCODE -ne 0) { throw "ISCC exited $LASTEXITCODE; there is no installer to ship" }
           New-Item -ItemType Directory -Force -Path out | Out-Null
           Copy-Item inno-out/*.exe -Destination out/
 
       - name: Build the package (.deb)
         if: runner.os == 'Linux'
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
         run: |
           uv run python packaging/build_deb.py --dist dist/truestill \
-            --version '${{ steps.version.outputs.value }}' --out out
+            --version "$VERSION" --out out
 
       # Both sides, out of the package payload: the desktop entry names what is staged, and what
       # is staged hashes to the committed artwork. Neither half alone would catch an entry and a
@@ -324,6 +332,8 @@ jobs:
       - name: Install, verify, uninstall (.deb)
         if: runner.os == 'Linux'
         timeout-minutes: 10
+        env:
+          EXPECT: ${{ steps.version.outputs.expect }}
         run: |
           sudo dpkg -i out/truestill_*.deb
           # ⚠ BOTH, AND BY NAME. `(akv)`: this asserted the file `/usr/bin/truestill` existed and
@@ -348,7 +358,8 @@ jobs:
 
           mkdir -p findings
           /usr/bin/truestill-app --self-check findings/selfcheck-installed.json
-          uv run python packaging/compare_selfcheck.py ${{ steps.version.outputs.expect }} findings/selfcheck-installed.json
+          # $EXPECT is unquoted on purpose: it is empty or the two words `--expect-version X.Y.Z`.
+          uv run python packaging/compare_selfcheck.py $EXPECT findings/selfcheck-installed.json
 
           sudo dpkg -r truestill
           test ! -e /usr/lib/truestill || { echo '::error::the package left files behind'; exit 1; }
@@ -373,6 +384,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         timeout-minutes: 10
+        env:
+          EXPECT: ${{ steps.version.outputs.expect }}
         run: |
           $setup = Get-ChildItem out -Filter 'TruestillSetup-*.exe' | Select-Object -First 1
           # `Start-Process -Wait -PassThru`, NOT `& ... > $null` with `$LASTEXITCODE`: Setup.exe is a
@@ -411,7 +424,8 @@ jobs:
           # The frozen exe is `--noconsole`, a GUI-subsystem program too; same mechanism.
           $run = Start-Process -FilePath $app -ArgumentList '--self-check','findings/selfcheck-installed.json' -Wait -PassThru
           if ($run.ExitCode -ne 0) { throw "the INSTALLED copy failed its own self-check (exit $($run.ExitCode))" }
-          uv run python packaging/compare_selfcheck.py ${{ steps.version.outputs.expect }} findings/selfcheck-installed.json
+          $expect = @($env:EXPECT -split ' ' | Where-Object { $_ })  # empty, or `--expect-version X.Y.Z` as two arguments
+          uv run python packaging/compare_selfcheck.py @expect findings/selfcheck-installed.json
           # ⚠ pwsh does not stop on a native command's exit code, and the runner exits on the LAST
           # $LASTEXITCODE only - so without this line a mismatch here was overwritten by the next
           # native call and could not fail the release (P188, 2026-09-02).
@@ -450,6 +464,8 @@ jobs:
 
       - name: Archive
         shell: bash
+        env:
+          VERSION: ${{ steps.version.outputs.value }}
         run: |
           mkdir -p out
           # ⚠ THE RESOLVED VERSION, NOT THE REF. `(aex)`, same class as the installer and the
@@ -465,7 +481,7 @@ jobs:
           #
           # This is CI-internal today, since the archive is uploaded rather than published - but
           # `gh release create out/*` in the publish job below ships whatever is in `out/`.
-          name="truestill-${{ steps.version.outputs.value }}-${RUNNER_OS}"
+          name="truestill-${VERSION}-${RUNNER_OS}"
           if [ "$RUNNER_OS" = "Windows" ]; then
             powershell -Command "Compress-Archive -Path dist/truestill/* -DestinationPath out/$name.zip"
           else
@@ -474,7 +490,7 @@ jobs:
           ls -l out
 
       - name: Upload build
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-${{ matrix.os }}
           path: |
@@ -522,7 +538,7 @@ jobs:
       contents: write # create the release
       id-token: write # the OIDC token sigstore signs with
     steps:
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: release-*
           merge-multiple: true
@@ -548,7 +564,7 @@ jobs:
       # certificate and log entry together, so a verifier needs only the bundle and the file.
       # ONE file is signed - the checksums - because that transitively covers every artifact and
       # gives a user one command to run rather than one per download.
-      - uses: sigstore/cosign-installer@v4.1.0
+      - uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
 
       - name: Sign the checksums
         run: cosign sign-blob --yes --bundle out/SHA256SUMS.sigstore.json out/SHA256SUMS
@@ -557,9 +573,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.ref_name }}" out/* \
-            --repo "${{ github.repository }}" \
-            --title "${{ github.ref_name }}" \
+          gh release create "$GITHUB_REF_NAME" out/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$GITHUB_REF_NAME" \
             --notes "**Verify before installing.** The checksums below are signed with
           [sigstore](https://www.sigstore.dev/) - keyless, so there is no certificate to trust and
           no key for anyone to steal. Both commands run where you downloaded the files:

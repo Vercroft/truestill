@@ -84,7 +84,7 @@ LINE_FILE = "file"
 LINE_END = "end"
 
 #: How many bytes of superseded per-file detail to keep. ⚠ **MEASURED, not chosen**: a real
-#: 33,000-file in-place run over `~/TruestillLibrary` produced a **36.9 MiB** record beside an
+#: 33,000-file in-place run over a real library produced a **36.9 MiB** record beside an
 #: **8.0 MiB** catalog - the record is **4.6x the catalog it describes**, so keeping every one
 #: forever is not an option. Compressed it is 2.5 MiB (6.9%), so this budget holds roughly
 #: twenty-five full-library runs or thousands of ordinary ones.

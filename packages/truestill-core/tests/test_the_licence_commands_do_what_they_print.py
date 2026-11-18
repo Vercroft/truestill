@@ -126,7 +126,7 @@ def test_issue_refuses_a_duplicate_order_reference_and_writes_nothing(
     assert issue(bench) == 0
     capsys.readouterr()
 
-    assert issue(bench, **{"--name": "Someone Else", "--email": "e@x.com"}) == 2
+    assert issue(bench, **{"--name": "Someone Else", "--email": "e@example.invalid"}) == 2
     refused = capsys.readouterr().err
 
     assert "already belongs to licence" in refused
@@ -206,7 +206,7 @@ def test_correct_email_rewrites_the_token_and_warns_about_the_old_one(
     customer keeps using the wrong file and the correction achieved nothing - so the sentence is
     asserted as carefully as the new token is.
     """
-    assert issue(bench, **{"--email": "ada@exmaple.com"}) == 0
+    assert issue(bench, **{"--email": "ada@exmaple.invalid"}) == 0
     capsys.readouterr()
 
     assert run(bench, "correct-email", "--order-ref", "PAD-1", "--email", "ada@example.com") == 0
@@ -296,7 +296,7 @@ def test_whois_flags_a_token_that_disagrees_with_the_store(
     An operator holding two files needs to be told which is current, and told *why* they differ -
     otherwise the natural reading is that the store is wrong.
     """
-    assert issue(bench, **{"--email": "ada@exmaple.com"}) == 0
+    assert issue(bench, **{"--email": "ada@exmaple.invalid"}) == 0
     old = bench / "old.token"
     old.write_text(token_at(bench).read_text())
     assert run(bench, "correct-email", "--order-ref", "PAD-1", "--email", "ada@example.com") == 0
@@ -305,7 +305,7 @@ def test_whois_flags_a_token_that_disagrees_with_the_store(
     assert run(bench, "whois", str(old)) == 0
     printed = capsys.readouterr().out
 
-    assert "ada@exmaple.com" in printed
+    assert "ada@exmaple.invalid" in printed
     assert "disagree about the address" in printed
 
 

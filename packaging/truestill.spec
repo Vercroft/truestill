@@ -11,7 +11,7 @@ analyze` exited 2 with *"unrecognized arguments"*, and the usage line it printed
 
 **THE NAMES ARE NOT CHOSEN HERE. They are read off `[project.scripts]`**, which both packages have
 declared all along - `truestill = truestill_cli.cli:main` and `truestill-app =
-truestill_app.__main__:main`. The freeze is what diverged. Matching it makes `CLAUDE.md`'s *"The
+truestill_app.__main__:main`. The freeze is what diverged. Matching it makes the working guide's *"The
 command is `truestill`; the local web UI is `truestill-app`"* true of the artifact rather than
 only of a clone.
 

@@ -6,7 +6,7 @@
 (`PROJECT_STATUS.md`'s condition 4). They shipped, and the front page never learned about them.
 
 ⚠ **A hand-listed set of subcommands has gone stale here twice over** - `(agu)`'s guard, and
-`check_product_name.SUBCOMMANDS`, which `CLAUDE.md` already records as one of three copies of a
+`check_product_name.SUBCOMMANDS`, which the working guide of the time recorded as one of three copies of a
 list that drifted. The README is now a released product's front page, so the cost of it being
 wrong is a reader concluding a capability does not exist.
 

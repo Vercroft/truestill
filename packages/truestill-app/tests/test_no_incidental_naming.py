@@ -10,155 +10,135 @@ the code lie about what it does, and those are allowlisted below with the reason
 
 * **Google Takeout, rclone, exiftool, SQLite, Playwright** - real formats, dependencies and
   tools. Renaming these would misdescribe the feature. They are not in :data:`BANNED` at all.
-* **Cited evidence** - PhotoPrism, Immich, IMatch, PixSort, Lightroom and the rest, where a
+* **Cited evidence** - PhotoPrism, Immich, IMatch, Lightroom and the rest, where a
   docstring cites another tool's behaviour to justify an invariant. `hash_cache.py`'s
   size+mtime rule *is* PhotoPrism's rule, and IMatch is the documented counter-example that
   bounds it. Strip those and the invariant is left with no stated reason, which is the drift
   four audit passes were spent removing. Also not in :data:`BANNED`.
 * **Drive nicknames** - "The Memory Cabinet", "Output". They are named corpora:
   `PERFORMANCE.md` §2.1 binds every measurement row to state its corpus, and "a cloud mount" is
-  not traceable. **The fenced folder is NO LONGER among them** - it was, on the argument that
-  a fence nobody can name is a fence nobody can enforce, and the maintainer reversed that on
-  2026-08-11: a public repository may not name his private tree, and the fence is enforced
-  from his environment rather than from this file.
+  not traceable. A folder the maintainer fences is never among them: a public repository does
+  not name a private tree, and the fence is enforced from the maintainer's own environment.
 * **Wayanad** - a place name, not personal data, and
   ``test_the_real_wayanad_run_is_one_full_proposal_no_trim`` records that the fixture was checked
   against a remembered trip. ``test_the_real_trip_run`` would lose exactly that.
 
 The allowlist stores the **reason**, not just the path, so the next person reads the ruling
 rather than an unexplained exemption.
+
+⚠ **THE BANNED TERMS ARE SHA-256 DIGESTS, NEVER TEXT.** A list of a person's name and private
+folders, published to keep them out of the repository, publishes them. Each term is lowercased
+with everything but letters and digits removed, then hashed. A line is checked by hashing each
+word and its prefixes, so a term is found at the start of a longer word (a mount named after a
+vendor); a two-word term is in :data:`BANNED_PAIRS` and checked against adjacent words only, so
+"one drive" in a sentence is not a vendor. To add one:
+``python3 -c "import hashlib; print(hashlib.sha256(b'term').hexdigest())"``.
 """
 
 from __future__ import annotations
 
+import functools
+import hashlib
+import itertools
 import re
 import subprocess
 from pathlib import Path
 
+import pytest
+
 REPO = Path(__file__).resolve().parents[3]
 
-#: Names that carry no meaning the surrounding text does not already carry. Matched
-#: case-insensitively, anywhere in a line or a path, after the allowlist has been subtracted.
+#: Digests of names that carry no meaning the surrounding text does not already carry, each with
+#: what to write instead. Matched after the allowlist has been subtracted from the line.
 BANNED: dict[str, str] = {
-    "pcloud": "a storage vendor; say what the mount *is* (cloud FUSE mount, network mount)",
-    "dropbox": "a storage vendor named incidentally",
-    "onedrive": "a storage vendor named incidentally",
-    "icloud": "a storage vendor named incidentally",
-    "tresorit": "a storage vendor named incidentally",
-    "icedrive": "a storage vendor named incidentally",
-    "backblaze": "a storage vendor named incidentally",
-    "dinesh": "the maintainer's personal name; say 'the maintainer'",
-    # ADDED 2026-08-11 after the maintainer ruled that no path revealing his cloud storage or
-    # his private folder structure may appear in a PUBLIC repository. This guard did not fail:
-    # it was built to PERMIT these, on the ruling that "a fence nobody can name is a fence
-    # nobody can enforce". That ruling has been reversed, so the permission goes with it.
-    "crypto folder": "the maintainer's locked folder; say 'the fenced folder'",
-    "vintage": "a level of the maintainer's private tree; use Input/2013 or Input/2014",
+    "b4908884ffae28db7cd1c09edfac0d11b0cba4ab288611c03398887b88820d61": (
+        "a storage vendor; say what the mount *is* (cloud FUSE mount, network mount)"
+    ),
+    "75170593d559f227f37d422056e701a9748849b661f92f74a8ffee3c977c1bb9": "a storage vendor",
+    "567781541aa1d043041ec08be14e1c519629784e3952d0d079ac87640242ba5e": "a storage vendor",
+    "e0aa81dd500c530a70b5511fc95959ae1e19dc19a01034e223bfc5ed78e3bdef": "a storage vendor",
+    "f6bf30615ee0c7b025aee0ac2297af0d92665e36f71c2d573412a5e6f833c12e": "a storage vendor",
+    "264d0fd5501b331fab1c488a11f69b33d79f9071cd7e1e1f8bb1149d05399a6b": "a storage vendor",
+    "7a03c4bbd666dfa8aa5b86a15333b50a0c8755e5e499e0e75532ee7277a29a60": "a storage vendor",
+    "5ec6881ba42f261646c989c418aa6d1eab40276e67c703a1edad399624628d2a": (
+        "the maintainer's personal name; say 'the maintainer'"
+    ),
+    "3300c929757e9ef5dcc62c0326f4f113523925e33923ee80d72998c566ab0d5a": (
+        "the maintainer's personal name; say 'the maintainer'"
+    ),
+    "887d814b066634a8b8ba0b65c506b5352df0e23a5c9ea98628e463cdc392dbc6": (
+        "a level of the maintainer's private tree; use Input/2013 or Input/2014"
+    ),
+    "2636b739be3cd8ed6c49a233888160ca75c3b0677d86fa35324751b649cea983": (
+        "a private repository's name; say 'an earlier prototype'"
+    ),
 }
 
-# A PLACE NAME IS EXPOSURE WHEN IT IS HIS FOLDER, AND EVIDENCE WHEN IT IS A DATASET ROW. Read this
-# before widening BANNED. On 2026-08-11 a blanket sweep replaced two Indian city names everywhere
-# they appeared, which was right inside a folder name taken from the fenced tree and WRONG inside
-# `reverse-geocoding-research.md`, where the same two words are gazetteer test points cited beside
-# Chennai with populations and coordinates. The sweep turned a measurement record into nonsense -
-# a lookup that "resolves to its own official name" - and it was caught by reading the diff rather
-# than by any test.
-#
-# So the question is never "is this word a place". It is **whose sentence is it in**: a path the
-# maintainer typed, or a row in a public dataset the record is measuring. The first is exposure and
-# goes; the second is the evidence the record's conclusion rests on, and removing it leaves an
-# assertion with nothing behind it - the same damage as rewriting a record to match the present.
-#
-# The practical consequence for this file: BANNED holds names of HIS structure, never bare
-# toponyms. A term that would also match dataset rows belongs in a scoped pattern or nowhere.
+#: Two-word terms, hashed with the space removed and matched against adjacent words only.
+BANNED_PAIRS: dict[str, str] = {
+    "e289236a3e78b6968b0cb0237aa66e232ca7733774310d77086b4af2f6e80ce7": (
+        "the maintainer's locked folder; say 'the fenced folder'"
+    ),
+}
 
-#: **AN ALLOWLIST THAT GREW TO ACCOMMODATE A RULING THAT WAS LATER REVERSED IS THE SILENT-GROWTH
-#: FAILURE `IMPLEMENTATION_STANDARDS.md` 6.2 ALREADY DOCUMENTS FOR THE DASH SWEEP.** Two entries
-#: were removed on 2026-08-11: one exempted `encrypted pCloud mount` / `pCloud Crypto` in a
-#: measurement row, and one - added the day before - exempted `~/pCloudDrive` so the corpus fence
-#: could name its own path. Both were sound under the rule of their day and both were exposure
-#: under the next one. An entry here must be re-justified when the ruling behind it moves, not
-#: inherited.
-#:
+#: Prefix lengths hashed, so a term is found at the start of a longer word.
+_PREFIX_LENGTHS = range(4, 17)
+
+_WORD = re.compile(r"[a-z0-9]+")
+
+
+@functools.cache
+def _hit(candidate: str) -> str | None:
+    """The reason for a banned digest among `candidate` and its prefixes, or `None`."""
+    for end in (len(candidate), *(n for n in _PREFIX_LENGTHS if n < len(candidate))):
+        reason = BANNED.get(hashlib.sha256(candidate[:end].encode()).hexdigest())
+        if reason is not None:
+            return reason
+    return None
+
+
+def _banned_in(text: str) -> list[str]:
+    """The reason for every banned term in `text`: per word, then per adjacent pair of words."""
+    words = _WORD.findall(text.lower())
+    found = [reason for w in words if (reason := _hit(w)) is not None]
+    for a, b in itertools.pairwise(words):
+        reason = BANNED_PAIRS.get(hashlib.sha256((a + b).encode()).hexdigest())
+        if reason is not None:
+            found.append(reason)
+    return found
+
+
+# A PLACE NAME IS EXPOSURE WHEN IT IS THE MAINTAINER'S FOLDER, AND EVIDENCE WHEN IT IS A DATASET
+# ROW. Read this before widening BANNED. On 2026-08-11 a blanket sweep replaced two city names
+# everywhere they appeared, which was right inside a folder name taken from the fenced tree and
+# WRONG inside a geocoding record, where the same two words are gazetteer test points with
+# populations and coordinates. The sweep turned a measurement record into nonsense, and it was
+# caught by reading the diff rather than by any test. So the question is never "is this word a
+# place" but **whose sentence is it in**. BANNED holds names of the maintainer's own structure,
+# never bare toponyms.
+
 #: ``(pattern, reason)`` - text that legitimately contains a banned term. Subtracted from each
-#: line *before* the scan, so these survive without exempting the whole file around them.
+#: line *before* the scan, so these survive without exempting the whole file around them. An
+#: entry is re-justified when the ruling behind it moves, never inherited.
 ALLOWED: tuple[tuple[str, str], ...] = (
     (
-        r"(/home/dinesh/pCloudDrive/|/home/dinesh/Icedrive/|/home/dinesh\b)",
+        r"\(Vercroft\|[A-Za-z-]+\)/truestill/",
         (
-            "the corpus fence in IMPLEMENTATION_STANDARDS.md 5 and its short form in "
-            "PROJECT_STATUS.md 4. THE PATHS ARE THE RULE. The clause used to say only "
-            '"the maintainer\'s encrypted cloud mount is READ-ONLY", and naming nothing was '
-            "its defect rather than its discretion: a fence you cannot check a command against "
-            "BEFORE running it is a fence you discover you have crossed. pCloud is a FUSE "
-            "mount, so a stat is a billed network round-trip - the cost is invisible in the "
-            "command and real on the wire, which is precisely why the rule must carry the "
-            "literal paths instead of describing them."
+            "the cosign `--certificate-identity-regexp` in README.md's verification section. "
+            "v0.1.0 and v0.1.1 were signed while the repository belonged to the maintainer's own "
+            "GitHub account, and a signature records the owner of its day, so the regexp names "
+            "that login beside Vercroft. Without it those releases cannot be verified."
         ),
     ),
     (
-        r"github\\\.com/dinesh-ad/truestill/\\\.github/workflows/release\\\.yml@",
-        (
-            "the cosign `--certificate-identity-regexp` in README.md's verification section. The "
-            "repository owner's name is LOAD-BEARING here in a way no reword can replace: the "
-            "regexp is what pins a signature to THIS repository's release workflow. Verifying "
-            "without it - or against a wildcard identity - would accept a signature produced by "
-            "anyone's fork, which is the entire attack the check exists to refuse. An integrity "
-            "instruction that does not name whose integrity it is asserting is not one."
-        ),
-    ),
-    (
-        r"\| (Google Takeout|Facebook|Flickr|Amazon Photos|Dropbox|iCloud) \|",
-        (
-            "the (jj) export-format table in SHIPPED.md. These names ARE the evidence: the "
-            "scope decision - archive reading is source-agnostic, and .7z is refused because "
-            "no service emits it - rests on which services export which format. Stripped, the "
-            "table asserts a conclusion with nothing behind it. Same standing as the cited "
-            "evidence below (PhotoPrism, IMatch): a vendor named to justify an invariant. "
-            "Scoped to table rows so the names cannot spread into prose."
-        ),
-    ),
-    (
-        (
-            r"pCloud / Dropbox / OneDrive \*\*mounted as a drive\*\*|"
-            r"Google Drive API, S3, iCloud web"
-        ),
-        (
-            "the two enumerations in BACKLOG.md's `(aav)` scope decision, and they are the "
-            "entry's whole function: it exists so a prospective user learns in one line whether "
-            "their setup is supported, and 'a cloud FUSE mount' does not answer 'does it work "
-            "with mine?'. The distinction being drawn - mounted filesystem yes, web API no - is "
-            "also invisible without examples on both sides, since the same company can appear "
-            "on either. Same standing as the (jj) export-format table: vendors named to make a "
-            "scope ruling checkable rather than to decorate it. Scoped to the two exact phrases "
-            "so the names cannot spread into surrounding prose."
-        ),
-    ),
-    (
-        r'for vendor in \("pcloud", "icedrive", "dropbox", "onedrive"\):',
+        r'for vendor in \("[a-z]+", "[a-z]+", "dropbox", "onedrive"\):',
         (
             "the assertion in `test_run_health.py` that proves the disk-full message names NO "
             "cloud vendor. The names ARE the assertion here: the design ruling was to report "
             "the free-space DELTA rather than maintain a per-vendor cache-path table, and a "
-            "test that checked for a genericised placeholder would assert nothing. Same "
-            "standing as the (jj) export-format table and (aav)'s scope enumeration - vendors "
-            "named to make a ruling checkable. Scoped to the one line."
+            "test that checked for a genericised placeholder would assert nothing. Scoped to "
+            "the one line."
         ),
-    ),
-    (
-        r"github\.com/dinesh-ad/truestill",
-        (
-            "the real repository URL - package metadata, README links and advisories resolve "
-            "to it, so it is an address rather than prose"
-        ),
-    ),
-    (
-        r"Copyright \d{4} Dinesh A",
-        "the licence copyright line, which must name the real holder to be a licence at all",
-    ),
-    (
-        r"dinesh-ad(?!/)",
-        "the literal git identity the commit-identity policy checks against; a value, not prose",
     ),
     (
         r"Backblaze tells people to make another backup first",
@@ -169,8 +149,7 @@ ALLOWED: tuple[tuple[str, str], ...] = (
             "is deleted or replaced - and that ruling rests on real products treating restore as "
             "the dangerous direction. Genericised to 'some backup software', the justification "
             "becomes an unsourced claim, which is the summary-instead-of-the-line failure "
-            "CLAUDE.md records. Same standing as the (jj) export-format table: a vendor named to "
-            "make a ruling checkable. Scoped to the exact sentence so the name cannot spread."
+            "CONTRIBUTING.md names. Scoped to the exact sentence so the name cannot spread."
         ),
     ),
     (
@@ -221,19 +200,19 @@ def _strip_allowed(text: str) -> str:
 
 
 def _offences(relative: str) -> list[str]:
-    """``path:line: term`` for every banned term left after the allowlist is subtracted."""
+    """``path:line: reason`` for every banned term left after the allowlist is subtracted."""
     path = REPO / relative
-    found: list[str] = []
-    for term in BANNED:
-        if term in _strip_allowed(relative).lower():
-            found.append(f"{relative}: '{term}' in the FILE NAME")
+    found = [
+        f"{relative}: in the FILE NAME, {reason}" for reason in _banned_in(_strip_allowed(relative))
+    ]
     try:
         content = path.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError):
         return found  # binary or unreadable: nothing to read, nothing to claim
     for number, line in enumerate(content.splitlines(), start=1):
-        bare = _strip_allowed(line).lower()
-        found.extend(f"{relative}:{number}: '{term}'" for term in BANNED if term in bare)
+        found.extend(
+            f"{relative}:{number}: {reason}" for reason in _banned_in(_strip_allowed(line))
+        )
     return found
 
 
@@ -248,17 +227,23 @@ def test_no_incidental_vendor_or_personal_naming() -> None:
     )
 
 
-def test_the_guard_catches_each_banned_term(tmp_path: Path) -> None:
-    """Every entry in BANNED must actually be detectable - a term nobody can trip is decoration."""
-    for term in BANNED:
-        probe = tmp_path / "probe.md"
-        probe.write_text(f"measured over a {term.upper()} mount\n", encoding="utf-8")
-        hits = [
-            line
-            for number, line in enumerate(probe.read_text(encoding="utf-8").splitlines(), 1)
-            if term in _strip_allowed(line).lower()
-        ]
-        assert hits, f"BANNED lists '{term}' but the scanner cannot see it"
+def test_every_banned_entry_is_a_digest() -> None:
+    """A plain-text term here would publish what the guard exists to keep out."""
+    malformed = [k for k in (*BANNED, *BANNED_PAIRS) if not re.fullmatch(r"[0-9a-f]{64}", k)]
+    assert not malformed, f"BANNED keys must be sha256 hex digests: {malformed}"
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "synced through Dropbox overnight",
+        "the DROPBOX-folder mount",
+        "a Dropboxsync mount",
+    ],
+)
+def test_the_scanner_finds_a_term_as_a_word_a_prefix_and_across_a_space(line: str) -> None:
+    """Driven by a vendor that may be named in public, since the private terms cannot be."""
+    assert _banned_in(line), f"the scanner missed a banned vendor in: {line}"
 
 
 def test_the_guard_spares_the_legitimate_references() -> None:
@@ -268,16 +253,15 @@ def test_the_guard_spares_the_legitimate_references() -> None:
     a named corpus, a place. If this ever fails, the sweep has started deleting meaning.
     """
     spared = [
-        "Homepage = 'https://github.com/dinesh-ad/truestill'",
-        "   Copyright 2026 Dinesh A",
-        "- **Commit identity policy:** `dinesh-ad`; no co-author trailers.",
-        "any remote rclone supports -- pCloud, Dropbox, S3, SFTP, Google Drive -- is usable",
+        "--certificate-identity-regexp '^https://github\\.com/(Vercroft|someone)/truestill/'",
+        "any remote rclone supports -- Dropbox, S3, SFTP, Google Drive -- is usable",
         "Size+mtime invalidation matches PhotoPrism's rule and is honest when the bytes change.",
         "Google Takeout's photoTakenTime is read before the filename tier.",
         "measured on The Memory Cabinet, 2,269 copies over a cloud FUSE mount",
         "test_the_real_wayanad_run_is_one_full_proposal_no_trim",
+        "dropping the box, one drive at a time",
+        "Drop box",
     ]
     for line in spared:
-        bare = _strip_allowed(line).lower()
-        flagged = [term for term in BANNED if term in bare]
+        flagged = _banned_in(_strip_allowed(line))
         assert not flagged, f"flagged a legitimate reference {flagged}: {line}"

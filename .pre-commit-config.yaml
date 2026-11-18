@@ -1,7 +1,16 @@
 # Hooks are run by prek (a drop-in for pre-commit that reads this file; it builds hook environments with uv).
 # Run against staged changes with: uv run prek run --all-files
 # Install the git hook with:       uv run prek install
+default_language_version:
+  golang: 1.27.3
 repos:
+  # The git hook of engineering-practices 7C.6: gitleaks at commit time, with this repository's config.
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e  # v8.30.1
+    hooks:
+      - id: gitleaks
+        args: [--config=.gitleaks.toml]
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.0
     hooks:
@@ -85,24 +94,14 @@ repos:
         pass_filenames: false
         always_run: true
 
-  # Portable golden rule (docs/GOLDEN_REPO_RULES.md §1): no AI co-author trailer /
-  # Anthropic/Claude email in history. Activate with:
+  # Engineering Practices §6.7 and §6.8: no co-author trailer, generated-by signature or email
+  # address in a commit message. Activate with:
   #   uv run prek install --hook-type commit-msg
   - repo: local
     hooks:
-      - id: no-ai-coauthor
-        name: block AI co-author / Anthropic-Claude signature in commit message
+      - id: commit-message-policy
+        name: no co-author trailer, generated-by signature or email address in a commit message
         entry: python3 scripts/check_commit_msg.py
-        language: system
-        stages: [commit-msg]
-      # The other direction of the closure rule. A letter that LEAVES BACKLOG.md must be
-      # declared closed in this commit's message and must arrive in SHIPPED.md in the same
-      # commit. It is a hook rather than a test because the corpus form is not honestly
-      # checkable - 31 of SHIPPED.md's 32 entries predate the trailer, and a guard that goes
-      # red on the past gets switched off. Reads only the staged diff, so it has no past.
-      - id: entry-closure
-        name: an entry that leaves the backlog is closed, and closed in this commit
-        entry: python3 scripts/check_entry_closure.py
         language: system
         stages: [commit-msg]
       # §2's "a pending result outranks a ready batch" carries TWO obligations - contention (do
@@ -125,9 +124,9 @@ repos:
       # Do not write a warn-and-exit-0 branch in any hook here; it is a message to nobody.
       #
       # ⚠ RULED 2026-08-24, reversing the 2026-08-23 per-instance-human ruling: when the push
-      # IS the fix for the red tip the gate is refusing, the agent runs
-      # TRUESTILL_PUSH_ANYWAY=1 itself rather than handing the command to a human. The gate is
-      # thereby advisory to the agent for exactly the fix-onto-red case and binding for every
+      # IS the fix for the red tip the gate is refusing, whoever pushes runs
+      # TRUESTILL_PUSH_ANYWAY=1 themselves rather than handing the command to someone else. The
+      # gate is thereby advisory for exactly the fix-onto-red case and binding for every
       # other refusal (contention, unknown tip, someone else's red). The override line printing
       # under `verbose: true` is what keeps this auditable.
       #

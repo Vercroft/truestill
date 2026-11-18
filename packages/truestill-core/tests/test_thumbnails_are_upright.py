@@ -45,9 +45,9 @@ from PIL import Image
 from truestill_core import thumbnails
 from truestill_core.hashing import HEIF_AVAILABLE
 
-#: Where real photographs live. Read-only; a test never organizes them. Derived from $HOME
-#: rather than written out, and overridable, so the path carries no one machine's owner.
-_CORPUS = Path(os.environ.get("TRUESTILL_CORPUS") or Path.home() / "TruestillLibrary" / "Input")
+#: Where real photographs live, named by `TRUESTILL_CORPUS`. Read-only; a test never organizes
+#: them. Without it the test skips, so the path carries no one machine's layout.
+_CORPUS = Path(os.environ.get("TRUESTILL_CORPUS") or "/nonexistent")
 
 #: EXIF orientations whose transform swaps the axes.
 _TRANSPOSING = {5, 6, 7, 8}

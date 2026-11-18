@@ -455,11 +455,9 @@ def test_a_real_length_email_breaks_at_punctuation_rather_than_mid_word(
     """⚠ **FOUND BY ISSUING A REAL LICENCE, AND THE FIXTURE ABOVE IS WHY NOTHING CAUGHT IT.**
 
     Every test in this file uses ``ada@example.com`` - fifteen characters, which fits the rail on
-    one line and can never wrap. The first real customer's address was 30 characters, and the rail drew (the address
-    below is synthetic - a real one must not live in the tree, and a guard enforces that):
-
-        a.very.long.address@subdomain.example.co
-        m
+    one line and can never wrap. The first real customer's address was 30 characters, and the rail drew
+    it with its last letter alone on the second line (the test's address below is synthetic - a real one
+    must not live in the tree, and a guard enforces that).
 
     One orphaned letter on its own line, directly under the name of the person who had just paid.
     `overflow-wrap: anywhere` is doing exactly what it says: breaking wherever the edge lands.

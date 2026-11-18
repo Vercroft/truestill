@@ -2,7 +2,7 @@
 
 **Written 2026-09-04 (P219).** `.scratch/organize-preview/` is the **style** reference - the
 maintainer's words, *"just a style of design, how it looks, that's it"* - and its source is kept
-at [`research/organize-preview/`](research/organize-preview/). **This document is the
+at `research/organize-preview/`. **This document is the
 specification.** Where the two differ, this wins, and section 6 is the one place they differ.
 
 ⚠ **The look is translucency, a hairline and a shadow over a gradient. It does NOT depend on
@@ -165,4 +165,4 @@ over tables, and any nested glass.
 The preview designs **one** screen; the other six are `PlaceholderMain`. This document fixes the
 **canvas, the surfaces and the floors**. **Per-screen composition is not covered**, and that is
 where a specification quietly becomes a reference again. What Organize establishes for the others,
-and what each still needs decided, is in [`react-migration-plan.md`](react-migration-plan.md).
+and what each still needs decided, is in `react-migration-plan.md`.

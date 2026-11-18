@@ -5,7 +5,7 @@ re-hash, because the rename **is** the operation. So the only thing that can mak
 is a record written before it. `organizer._move_source` one branch away has always obeyed this -
 it verifies the destination copy before unlinking the source - and this path did not.
 
-**Measured before the fix, on real photographs from `~/TruestillLibrary/Input`**: eight
+**Measured before the fix, on real photographs from a real library**: eight
 `SIGKILL`s of an `--in-place` run left a file moved with no undo row in **2 of 8**, and
 `undo-organize` then printed *"Restored 27 file(s)"* and left the photograph displaced. After it,
 the same eight kills score **zero**. That harness is the acceptance test; this file is the part

@@ -1,0 +1,98 @@
+# Patterns for addresses, links and personal data on top of the default gitleaks rules. Go RE2 only.
+title = "leak review, patterns"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "email"
+description = "email address"
+regex = '''[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}'''
+[[rules.allowlists]]
+description = "noreply and placeholder addresses"
+regexes = ['''(?i)@(?:users\.noreply\.github\.com|(?:[a-z0-9-]+\.)*example\.(?:com|org|net)|[a-z0-9.-]*\.invalid)$''']
+[[rules.allowlists]]
+description = "public role addresses of a reviewed vendor (noreply: GitHub's own merge and web-edit commits)"
+regexes = ['''(?i)^(?:support|security|noreply)@github\.com$''']
+
+
+[[rules]]
+id = "ipv4"
+description = "IPv4 address"
+regex = '''\b(?:(?:25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])\b'''
+[[rules.allowlists]]
+description = "loopback, unspecified and documentation ranges"
+regexes = ['''^(?:127\.|0\.0\.0\.0$|192\.0\.2\.|198\.51\.100\.|203\.0\.113\.)''']
+
+
+[[rules]]
+id = "ipv6"
+description = "IPv6 address"
+regex = '''(?i)\b(?:(?:[0-9a-f]{1,4}:){3,7}[0-9a-f]{1,4}|(?:[0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4})\b'''
+[[rules.allowlists]]
+description = "documentation range"
+regexes = ['''(?i)^2001:db8:''']
+
+
+[[rules]]
+id = "home-path"
+description = "path in a person's home directory"
+# The match starts with one character before the path: gitleaks' default allowlist drops any
+# secret that is a bare "^/home/..." path, so a match that starts at the slash would never report.
+regex = '''(?i)(?:[^\w/.-](?:/home/[a-z_][a-z0-9_-]*/|/Users/[A-Za-z0-9._-]+/)|[A-Z]:\\Users\\[A-Za-z0-9._-]+\\)'''
+[[rules.allowlists]]
+description = "generic CI and placeholder users"
+regexes = ['''(?is)^.?(?:/home/(?:runner|user|username|you)/|/Users/(?:user|username|you)/)''']
+[[rules.allowlists]]
+description = "GitHub's Windows runner account, named where CI output is quoted"
+regexes = ['''(?i)C:\\Users\\runneradmin\\''']
+
+
+[[rules]]
+id = "phone"
+description = "international phone number"
+# Starts with "+" after a non-word character, so a version's build part (1.2.3+2013...) is not one.
+regex = '''(?:^|[^\w.+-])\+[1-9](?:[ .()-]?[0-9]){7,14}\b'''
+
+[[rules]]
+id = "url-host"
+description = "link to a host that is not reviewed as public"
+regex = '''(?i)\bhttps?://([a-z0-9][a-z0-9.-]*)'''
+secretGroup = 1
+[[rules.allowlists]]
+description = "placeholder hosts"
+regexes = ['''(?i)^(?:localhost|(?:[a-z0-9-]+\.)*example(?:\.(?:com|org|net))?|[a-z0-9.-]*\.(?:invalid|test))$''']
+[[rules.allowlists]]
+description = "reviewed public hosts: add one only after reviewing it"
+regexes = ['''(?i)^(?:adr\.github\.io|bford\.info|biomejs\.dev|blessed\.rs|blog\.rust-lang\.org|blog\.sentry\.io|blog\.yossarian\.net|clippy\.rust-lang\.org|coreyja\.com|daniel\.haxx\.se|dev\.classmethod\.jp|devblogs\.microsoft\.com|devguide\.python\.org|diataxis\.fr|discuss\.python\.org|doc\.rust-lang\.org|docs\.astral\.sh|docs\.docker\.com|docs\.expo\.dev|docs\.github\.com|docs\.npmjs\.com|docs\.pytest\.org|docs\.python\.org|docs\.sqlc\.dev|docs\.zizmor\.sh|embarkstudios\.github\.io|eslint\.org|fastapi\.tiangolo\.com|files\.pythonhosted\.org|fsl\.software|git-scm\.com|github\.blog|github\.com|go\.dev|golangci-lint\.run|google\.github\.io|hynek\.me|keepachangelog\.com|labs\.boostsecurity\.io|mypy\.readthedocs\.io|nexte\.st|nextjs\.org|nodejs\.org|openapi-ts\.dev|osv\.dev|oxc\.rs|packages\.debian\.org|packaging\.python\.org|peps\.python\.org|pip\.pypa\.io|pkg\.go\.dev|pnpm\.io|polyformproject\.org|pydevtools\.com|pypi\.org|pythonspeed\.com|rust-lang\.github\.io|spdx\.org|sqlite\.org|thai-lint\.readthedocs\.io|tianpan\.co|typescript-eslint\.io|typing\.python\.org|us\.pycon\.org|words\.filippo\.io|www\.b-list\.org|www\.cisa\.gov|www\.cognitect\.com|www\.debian\.org|www\.devclass\.com|www\.pkgpulse\.com|www\.postgresql\.org|www\.python\.org|www\.theregister\.com|www\.typescriptlang\.org|www\.writethedocs\.org|x\.com)$''']
+[[rules.allowlists]]
+description = "reviewed hosts only this repository cites: 127.0.0.1 is the app's own loopback address, and github is the escaped github\\.com in the cosign identity regexp; add one only after reviewing it"
+regexes = ['''(?i)^(?:127\.0\.0\.1|github|bugs\.launchpad\.net|dejavu-fonts\.github\.io|exiftool\.org|git-lfs\.github\.com|lucide\.dev|metadatafixer\.com|semver\.org|sichard\.ca|sourceforge\.net|tmsearch\.uspto\.gov|token\.actions\.githubusercontent\.com|ui\.shadcn\.com|www\.sigstore\.dev|www\.law\.cornell\.edu|www\.videolan\.org|www\.w3\.org)$''']
+
+# GitHub App installation tokens in the stateless ghs_APPID_JWT form (https://github.blog/changelog/2026-10-02-stateless-github-app-installation-tokens-rolled-out/), which the default github-app-token rule misses.
+[[rules]]
+id = "github-app-installation-token-stateless"
+description = "GitHub App installation token, stateless form (ghs_APPID_JWT)"
+regex = '''(ghs_[0-9]+_[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)'''
+secretGroup = 1
+keywords = ["ghs_"]
+
+# Truestill's own secrets. The licence token is the payload, a dot and the signature, both unpadded base64url
+# (truestill_core.licence: encode_payload, verify_token; scripts/mint_licence.py: sign_payload). The payload is
+# canonical JSON with sorted keys, so it always starts {"account":" (eyJhY2NvdW50Ijoi), and an Ed25519 signature
+# is 64 bytes, 86 characters. The default rules miss it: it has two parts, not a JWT's three.
+[[rules]]
+id = "truestill-licence-token"
+description = "Truestill licence token"
+regex = '''\b(eyJhY2NvdW50Ijoi[A-Za-z0-9_-]+\.[A-Za-z0-9_-]{86})(?:[^A-Za-z0-9_-]|$)'''
+secretGroup = 1
+keywords = ["eyjhy2nvdw50ijoi"]
+
+# The licence signing key: scripts/mint_licence.py (write_new_key) writes the 32-byte Ed25519 seed as one unpadded
+# base64url line of 43 characters. Matched as a line on its own, so a key file and a key pasted into another file
+# are both caught, in a staged change, in history and in a directory scan.
+[[rules]]
+id = "truestill-licence-signing-key"
+description = "Truestill licence signing key"
+regex = '''(?m)^[ \t]*([A-Za-z0-9_-]{43})[ \t]*\r?$'''
+secretGroup = 1

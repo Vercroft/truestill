@@ -11,7 +11,7 @@ exists. They were found by measuring a *new* token, mentioned, mentioned again, 
 has to earn itself, and a guard written green over a class with no instances earns nothing. This
 one is written over **six live instances**, in a block whose own prose claims the opposite, and it
 is mechanical where the alternative is somebody remembering to re-run a calculation by hand every
-time a hex changes. That is exactly the criterion `CLAUDE.md` states for a rule that may be read
+time a hex changes. That is exactly the criterion the working guide of the time stated for a rule that may be read
 on demand: *something mechanical, not the reading, enforces it.*
 
 **What it cannot see**, said plainly: whether a colour is the *right* colour, whether the ratio

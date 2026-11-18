@@ -459,7 +459,7 @@ separate closed codebase.
 **What this binds:**
 
 - Root `LICENSE` is the Apache-2.0 text; package metadata (`license = "Apache-2.0"`) matches.
-- Copyright line: `Copyright 2026 Dinesh A`.
+- Copyright line: the maintainer's own name (superseded by D23).
 - No copyleft (GPL-family) dependency may be introduced into the published packages without an
   explicit superseding decision - Apache-2.0 + open-core is incompatible with that surprise.
 - Open-core does **not** mean a free/crippled build and a proprietary build of the same tree.
@@ -733,7 +733,7 @@ not a dry run (`release.yml`).
 ## D11. Stay on mypy - and the condition that would change it, restated so it can fire
 
 **Decided 2026-08-21**, replacing a trigger in
-[`frontend-and-shell-standard-research.md`](frontend-and-shell-standard-research.md) that named
+`frontend-and-shell-standard-research.md` that named
 the wrong tool. That file is a record and keeps its original wording; this is the live version.
 
 **The decision is unchanged: mypy strict, in the gate.** The reason is not that the alternatives
@@ -1675,5 +1675,34 @@ free-for-personal-use tool with paid commercial use.
   closed.
 - The Debian copyright file and the three package `pyproject.toml` files name the new licence;
   a test keeps the three package `LICENSE` copies identical to the root.
+
+**Status:** Settled, except the copyright holder: superseded by D23 (2026-11-17).
+
+---
+
+## D23. Copyright holder: Vercroft
+
+**Decision (the maintainer, 2026-11-17).** Supersedes D22 on the copyright holder only; every
+other part of D22 stands. The copyright notice names **Vercroft**: `Required Notice: Copyright
+2026 Vercroft` in `LICENSE` and the three package copies, `authors` in the three
+`pyproject.toml` files, the Debian copyright and maintainer fields, and the Windows installer's
+publisher.
+
+### Why
+
+- **The notice may name the owner by a known alternative designation.** 17 U.S.C. §401(b)(3)
+  requires "the name of the owner of copyright in the work", and accepts an abbreviation by
+  which the name can be recognized or a generally known alternative designation of the owner
+  (https://www.law.cornell.edu/uscode/text/17/401). Vercroft is the name the maintainer
+  publishes under and the GitHub organisation that owns this repository.
+- **One holder everywhere.** Engineering Practices names Vercroft as the copyright holder in
+  every public repository's `LICENSE` (§7F.2), so this repository matches the others.
+
+### Consequences
+
+- The company is being registered; when it exists, the code is assigned to it and the notice
+  already names it.
+- v0.1.0 and v0.1.1 keep the notice they shipped with.
+- `test_the_licence_is_one_text_in_every_package.py` pins the first line.
 
 **Status:** Settled.

@@ -1,7 +1,7 @@
 """A symlinked path is the same folder, and the product must say so. `(aeb)`, restore stage 3.
 
-⚠ **THIS IS LIVE ON THE MAINTAINER'S MACHINE.** `/home/dinesh/TruestillLibrary` is a symlink to
-`/data/TruestillLibrary`. Both spellings are real, both get typed at different times, and they are
+⚠ **THIS IS LIVE ON THE MAINTAINER'S MACHINE.** `~/Library` is a symlink to
+`/data/Library`. Both spellings are real, both get typed at different times, and they are
 one folder. `(aeb)` found the first casualty on `truestill catalog`, which reported a correctly
 placed catalog as being *"in the old location"* and advised a `--move` that could not help.
 

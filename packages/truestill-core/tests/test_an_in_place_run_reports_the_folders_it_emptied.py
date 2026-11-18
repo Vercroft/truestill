@@ -65,7 +65,7 @@ def test_a_plain_move_from_another_root_contributes_nothing(tmp_path: Path) -> N
             catalog,
             drive="drive-1",
             run="r2",
-            root="/home/someone/Downloads",
+            root="/home/user/Downloads",
             dest="/drive",
             old="Holiday/a.jpg",
         )

@@ -257,7 +257,7 @@ their own run's shape.
 **Do not "optimise" this by reintroducing a single `dumps`.** It is 13.8% *more* bytes on disk that
 were saved by dropping `indent=2` (215.4 MiB against 249.9 MiB), and the whole point is that the
 cost arrives per line rather than as a cliff at the end of a six-hour run. Full argument:
-[`research/backlog/akr.md`](research/backlog/akr.md).
+`research/backlog/akr.md`.
 
 ---
 

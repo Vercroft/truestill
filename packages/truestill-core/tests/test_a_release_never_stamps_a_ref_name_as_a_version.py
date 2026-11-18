@@ -193,9 +193,12 @@ def test_no_consumer_derives_its_own_version() -> None:
     )
     for step in consumers:
         run = str(step["run"])
-        assert "steps.version.outputs.value" in run, (
-            f"{step.get('name')!r} does not read the shared version"
-        )
+        # The shared version arrives through the step's `env:` rather than inline in `run:`, so a
+        # context value is never spliced into a script (zizmor's template-injection audit).
+        env = step.get("env", {})
+        unshared = f"{step.get('name')!r} does not read the shared version"
+        assert env.get("VERSION") == "${{ steps.version.outputs.value }}", unshared
+        assert "VERSION" in run, unshared
         hardcoded = (
             f"{step.get('name')!r} tests for a hardcoded branch name. The question is whether the "
             f"ref is a version tag, not whether it is one particular branch."

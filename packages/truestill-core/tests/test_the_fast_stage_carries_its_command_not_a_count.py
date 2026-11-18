@@ -2,7 +2,7 @@
 
 **The defect, reproduced before this was written.** `(ajx)` made the two-stage split binding on
 2026-09-03 and described the fast stage as *"40 s over 3,543 tests"*. Four days later the suite
-collected **3,570**, and the sentence had been copied into five files - `CLAUDE.md`, the binding
+collected **3,570**, and the sentence had been copied into five files - the working guide of the time, the binding
 `IMPLEMENTATION_STANDARDS.md`, `BACKLOG.md`, `ajx.md`, and **`.github/workflows/ci.yml`**, the
 banner a person reads when deciding whether to dispatch the browser lane before tagging. All five
 were wrong together, and nothing said so.
@@ -34,22 +34,18 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import repo_sources
-
 ROOT = Path(__file__).resolve().parents[3]
 
 #: The canon plus the workflow banners. **Not `*.md`** - `(aka)`: a sweep is only as wide as its
 #: pathspec, and `ci.yml` held one of the five copies precisely because an earlier sweep matched
-#: markdown alone. Records are out of scope by construction: a record says what was true when it
-#: was written, and `trip-grouping-research.md` and `handoff-2026-09-01.md` both legitimately
-#: state a count from their own day.
+#: markdown alone. The backlog bodies were in scope too until they left the tree
+#: (`CONTRIBUTING.md`, "Removed documents").
 CANON = (
-    "CLAUDE.md",
-    "docs/PROJECT_STATUS.md",
+    "README.md",
+    "CONTRIBUTING.md",
     "docs/ENGINEERING_STANDARD.md",
     "docs/IMPLEMENTATION_STANDARDS.md",
     "docs/DECISIONS.md",
-    "docs/BACKLOG.md",
     "docs/PERFORMANCE.md",
     ".github/workflows/ci.yml",
     ".github/workflows/release.yml",
@@ -64,9 +60,8 @@ _DATE = re.compile(r"20\d\d-\d\d-\d\d")
 
 
 def _scope() -> list[str]:
-    """The canon, plus every open backlog body - a ruling's body carries the same claim."""
-    bodies = repo_sources.paths("docs/research/backlog/*.md")
-    return [p for p in (*CANON, *bodies) if (ROOT / p).is_file()]
+    """The canon. A file that is renamed or removed leaves the scope, which the guard below refuses."""
+    return [p for p in CANON if (ROOT / p).is_file()]
 
 
 def offenders_in(name: str, text: str) -> list[str]:
@@ -115,7 +110,8 @@ def test_the_guard_is_reading_the_canon_and_the_workflows() -> None:
     about, so its absence is the specific silence this must not have."""
     scope = _scope()
 
-    assert len(scope) > 100, f"only {len(scope)} files in scope; the body glob is not reading"
+    missing = sorted(set(CANON) - set(scope))
+    assert not missing, f"{missing} left the scope; name the file that replaced each"
     assert ".github/workflows/ci.yml" in scope, "the workflow banner is out of scope again"
     assert any("make check" in (ROOT / p).read_text(encoding="utf-8") for p in scope), (
         "no file in scope mentions `make check`; the detector cannot fire"

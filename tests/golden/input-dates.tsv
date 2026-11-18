@@ -1,10 +1,9 @@
 # golden corpus snapshot - what the date resolver decided, file by file
-# regenerate: uv run python scripts/golden_corpus.py record
-# compare:    uv run python scripts/golden_corpus.py check
+# regenerate: uv run python scripts/golden_corpus.py record --root <corpus>
+# compare:    uv run python scripts/golden_corpus.py check --root <corpus>
 # ON DEMAND ONLY - the corpus is one real machine's Input; CI never runs this and
 # this file is not CI coverage. tests/golden/README.md states the limit.
-# root: /data/TruestillLibrary/Input
-# machine: dell-g5505 linux 7.0.0-15-generic
+# machine: linux 7.0.0-15-generic
 # filesystem: ext4 (/dev/nvme0n1p1)
 # files: 7790
 # distribution: exif=6488 filename=17 inferred_local=20 none=1262 rejected_future=3

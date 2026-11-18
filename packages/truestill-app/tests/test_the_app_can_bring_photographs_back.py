@@ -416,7 +416,7 @@ def test_a_library_declared_by_its_other_spelling_still_settles_the_ambiguity(
 ) -> None:
     """⚠ **THE DEFECT THIS TURN EXISTS FOR, AND IT WAS LIVE ON THE MAINTAINER'S MACHINE.**
 
-    `/home/dinesh/TruestillLibrary` is a symlink to `/data/TruestillLibrary`. The declared root
+    `~/Library` is a symlink to `/data/Library`. The declared root
     and the remembered drive hint are two things a person types at different times, so they are
     routinely two spellings of one folder - and a string compare ignored the user's explicit
     declaration, leaving every card blank with the two-libraries sentence they had just answered.

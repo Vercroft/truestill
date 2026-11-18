@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""commit-msg hook: keep AI co-authorship and Anthropic/Claude emails out of history.
+"""commit-msg hook: a commit credits people only and carries no email address.
 
-Portable golden rule (``docs/GOLDEN_REPO_RULES.md`` §1): commit messages must not carry a
-``Co-Authored-By`` trailer, an ``@anthropic`` email, or a "generated with Claude" signature.
-Referencing the file ``CLAUDE.md`` by name is fine -- only trailers/emails/signatures are blocked.
+Engineering Practices §6.8: no co-author trailer and no generated-by signature in commit text.
+§6.7: no email address in a commit message; a GitHub noreply address is an identity, not contact
+data, so it is allowed. The hook names no tool; it refuses the shapes.
 """
 
 from __future__ import annotations
@@ -13,18 +13,28 @@ import sys
 from pathlib import Path
 
 _FORBIDDEN = re.compile(
-    r"co-authored-by:|@anthropic|\U0001f916 generated|generated with \[claude",
+    r"co-authored-by:|\U0001f916|generated with \[",
     re.IGNORECASE,
 )
+
+_EMAIL = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}")
+_NOREPLY = re.compile(r"@users\.noreply\.github\.com$", re.IGNORECASE)
 
 
 def main() -> int:
     message = Path(sys.argv[1]).read_text(encoding="utf-8")
-    match = _FORBIDDEN.search(message)
-    if match is not None:
-        print(f"commit-msg: refused -- forbidden content {match.group(0)!r}.", file=sys.stderr)
+    found = _FORBIDDEN.search(message)
+    refused = found.group(0) if found is not None else None
+    if refused is None:
+        refused = next(
+            (m.group(0) for m in _EMAIL.finditer(message) if not _NOREPLY.search(m.group(0))),
+            None,
+        )
+    if refused is not None:
+        print(f"commit-msg: refused -- forbidden content {refused!r}.", file=sys.stderr)
         print(
-            "Project rule: no Co-Authored-By trailer / Anthropic-Claude email in commit history.",
+            "Project rule: no co-author trailer, generated-by signature or email address "
+            "in a commit message.",
             file=sys.stderr,
         )
         return 1

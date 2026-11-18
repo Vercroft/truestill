@@ -40,7 +40,7 @@ from truestill_core.run_record import (
 
 #: One real organize entry, from the 3,826-file record. Varied per index by `_entries`.
 _TEMPLATE: dict[str, Any] = {
-    "source": "/data/TruestillLibrary/Input/2014/IMG_20140812_180155.jpg",
+    "source": "/data/Library/Input/2014/IMG_20140812_180155.jpg",
     "status": "uploaded",
     "detail": "",
     "landed_at": "2014/2014-08/2014-08-12 - Wayanad/20140812_180155_IMG_20140812_180155.jpg",
@@ -66,7 +66,7 @@ _TEMPLATE: dict[str, Any] = {
 def _entries(count: int) -> Iterator[dict[str, Any]]:
     for index in range(count):
         entry = dict(_TEMPLATE)
-        entry["source"] = f"/data/TruestillLibrary/Input/2014/IMG_2014{index:08d}.jpg"
+        entry["source"] = f"/data/Library/Input/2014/IMG_2014{index:08d}.jpg"
         entry["landed_at"] = f"2014/2014-08/2014-08-12 - Wayanad/2014{index:08d}.jpg"
         entry["planned_relative"] = entry["landed_at"]
         entry["sha256"] = f"{index:064x}"
@@ -108,7 +108,7 @@ def main() -> int:
     args = parser.parse_args()
     args.out.parent.mkdir(parents=True, exist_ok=True)
 
-    header = RunHeader(kind="organize", source="/data/TruestillLibrary/Input", destination="/x")
+    header = RunHeader(kind="organize", source="/data/Library/Input", destination="/x")
     supplied: Any = list(_entries(args.files)) if args.materialise else _entries(args.files)
     rss_before = _rss_mib()
 

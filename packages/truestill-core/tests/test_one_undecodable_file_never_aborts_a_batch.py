@@ -29,6 +29,7 @@ The real corpus files are used too, and skip when they are absent.
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
@@ -40,7 +41,9 @@ from truestill_core.scan import compute_hashes
 #: for the same reason as the first two, rather than because anybody listed it.
 _ESCAPING = [SyntaxError, EOFError, type("_ThirdPartySurprise", (Exception,), {})]
 
-_CORPUS = Path.home() / "ad" / "application" / "metadata-extractor-images"
+#: A checkout of the public `drewnoakes/metadata-extractor-images` repository, if this machine has
+#: one; the test below skips without it.
+_CORPUS = Path(os.environ.get("TRUESTILL_FORMAT_CORPUS") or "/nonexistent")
 
 
 def _image(path: Path, colour: tuple[int, int, int]) -> Path:

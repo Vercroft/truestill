@@ -38,6 +38,8 @@ concurrency:
   group: ci-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   check:
     name: check (${{ matrix.os }}, py${{ matrix.python }})
@@ -54,6 +56,8 @@ jobs:
     # 2026-10-01) wants exactly this shape again, and rebuilding it is how the gate gets
     # hard-coded to `true` by someone in a hurry.
     continue-on-error: ${{ matrix.experimental }}
+    permissions:
+      contents: read
     # ⚠ WITHOUT THIS THE DEFAULT IS SIX HOURS, and on 2026-08-19 that was not theoretical: run
     # 32279378834 sat 33+ minutes in `apt-get update` against a mirror that was not answering,
     # with nothing to stop it. The other two lanes had already finished in 1m07s and 3m02s.
@@ -84,12 +88,9 @@ jobs:
     env:
       UV_PYTHON: ${{ matrix.python }}
     steps:
-      # ⚠ DEPTH 1, THE ACTION'S DEFAULT, AND A DECISION RATHER THAN AN OVERSIGHT (P189, 2026-09-02).
-      # `test_closed_entries_leave_the_backlog.py` reads closure trailers out of `git log`; at depth
-      # 1 it read one commit and passed over an empty set, and it now SKIPS here with that reason.
-      # A full checkout (`fetch-depth: 0`) would make it real in CI at ~170 MB per lane per push
-      # (the pack is 169 MiB). Whether that is worth it is the maintainer's call; `(ajs)` carries it.
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       # ⚠ THE BOUND LIVES IN apt's CONFIG, NOT ON OUR apt COMMANDS, AND THAT IS THE FIX.
       #
@@ -227,7 +228,7 @@ jobs:
         run: echo "TS_EXIFTOOL_END=$(date +%s)" >> "$GITHUB_ENV"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v9.0.0
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -375,7 +376,7 @@ jobs:
       # See the E2E lane's copy for why this exists and why it is not a gate.
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: test-results-${{ matrix.os }}
           path: test-results.xml
@@ -540,6 +541,8 @@ jobs:
     # Nightly and on demand. NOT on push - see the banner above for the measurement behind that.
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     name: e2e (${{ matrix.browser }}, ubuntu)
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     # ⚠ SPLIT BY ENGINE 2026-09-12, and it splits ENGINES rather than TESTS - which is the whole
     # reason this shape was chosen over `pytest-split`. That plugin needs a committed
@@ -600,7 +603,9 @@ jobs:
     # 45 is the outer bound for what no ceiling can see: a hang before pytest ever starts.
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       # Same drop-in as the `check` job. It is repeated rather than shared because a composite
       # action for four lines is more machinery than the duplication costs - but it MUST be here
@@ -629,7 +634,7 @@ jobs:
           exiftool -ver
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v9.0.0
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -661,7 +666,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Cache browsers
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
@@ -680,7 +685,7 @@ jobs:
       # is a version that disagrees with itself eventually. `engine-strict=true` in the frontend's
       # `.npmrc` turns a mismatch into a hard EBADENGINE rather than a warning nobody reads.
       - name: Set up Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version-file: packages/truestill-app/frontend/.nvmrc
           cache: npm
@@ -726,9 +731,11 @@ jobs:
       # They therefore run in BOTH legs, deliberately: 0.5 min measured, against a selection
       # mechanism for "unparameterised" that does not exist and would fail silently if it did.
       - name: E2E
+        env:
+          E2E_EXTRA_INPUT: ${{ inputs.e2e_extra }}
         run: |
           make e2e E2E_BROWSERS=${{ matrix.browser }} E2E_SECONDS_MAX=${{ matrix.browser == 'webkit' && 2700 || 1000 }} \
-            E2E_EXTRA="--junitxml=test-results.xml ${{ inputs.e2e_extra }}"
+            E2E_EXTRA="--junitxml=test-results.xml $E2E_EXTRA_INPUT"
 
       # 510 browser tests on 2026-09-02; the floor is a fraction (P189, Q1213).
       - name: The lane actually ran
@@ -742,7 +749,7 @@ jobs:
       # deliberately no dashboard, no store and nothing here in the critical path.
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: test-results-e2e-${{ matrix.browser }}
           path: test-results.xml
@@ -764,10 +771,53 @@ jobs:
       # replay stops being something you have to notice.
       - name: Upload traces and video from failures
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: e2e-failure-artifacts-${{ matrix.browser }}
           path: tests/e2e/.artifacts
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+
+  # Static analysis of the workflows (engineering-practices 7B.7), from a hash-pinned zizmor.
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Audit the workflows
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install --quiet --require-hashes -r .github/requirements/zizmor.txt
+          "$RUNNER_TEMP/venv/bin/zizmor" --offline .github/workflows
+
+  # The one CI check the ruleset requires. Matrix check names carry the OS and the Python version
+  # and change with them; this name does not. `if: always()` so a failed job cannot skip it, and
+  # it fails unless every job it needs passed or was skipped (e2e is skipped on pull requests).
+  # `test_the_gate_summary_needs_every_job.py` fails when a job in this file is missing from `needs`.
+  gate-summary:
+    name: Gate summary
+    if: always()
+    needs: [check, e2e, zizmor]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Require every needed job to have passed or been skipped
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          results = {job: need["result"] for job, need in json.loads(os.environ["NEEDS_JSON"]).items()}
+          for job, result in sorted(results.items()):
+              print(f"{job}: {result}")
+          bad = sorted(f"{job}={result}" for job, result in results.items() if result not in ("success", "skipped"))
+          if not results or bad:
+              sys.exit("not every needed job passed or was skipped: " + (", ".join(bad) or "no jobs"))
+          PY

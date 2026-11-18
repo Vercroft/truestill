@@ -56,8 +56,8 @@ SCHEMA_VERSION = 3
 
 #: How many absent files to prune per run. Bounded so cleanup cannot degrade into an
 #: O(whole-cache) stat storm on a library that is mostly untouched -- the point is that it
-#: runs *every time* rather than being defined and never called, which is the mistake the
-#: PixSort audit recorded.
+#: runs *every time* rather than being defined and never called, which is the mistake an
+#: earlier prototype's audit recorded.
 PRUNE_LIMIT = 2_000
 
 _SCHEMA = """

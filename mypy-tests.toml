@@ -41,8 +41,8 @@
 #                                           tests, and widening it would need one hook per tree
 #                                           for the duplicate-`conftest` reason below. This runs
 #                                           under `make check` (via `typecheck`) and in CI. The
-#                                           hook's green column is not the gate, as CLAUDE.md
-#                                           already says of all eight of them.
+#                                           hook's green column is not the gate, as
+#                                           CONTRIBUTING.md says of all of them.
 #   BOTH PLATFORMS, deliberately          - mypy resolves `sys.platform` for the HOST and prunes
 #                                           the other arm, so a correct cross-platform helper
 #                                           reads as unreachable on exactly one of them. Measured

@@ -2,7 +2,7 @@
 name = "truestill-cli"
 version = "0.1.1"
 description = "Command-line interface for Truestill: organize, de-duplicate and back up a media library."
-authors = [{ name = "Truestill contributors" }]
+authors = [{ name = "Vercroft" }]
 requires-python = ">=3.14"
 readme = "README.md"
 license = "LicenseRef-PolyForm-Strict-1.0.0"
@@ -23,8 +23,8 @@ dependencies = [
 truestill = "truestill_cli.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/dinesh-ad/truestill"
-Repository = "https://github.com/dinesh-ad/truestill"
+Homepage = "https://github.com/Vercroft/truestill"
+Repository = "https://github.com/Vercroft/truestill"
 
 [build-system]
 requires = ["hatchling"]

@@ -37,9 +37,9 @@ def _seeded(db: Path) -> Catalog:
     catalog = Catalog(db)
     catalog.upsert_drive(uuid=_UUID, label="Output")
     catalog.set_setting("layout_template", "{yyyy}/{yyyy}-{mm}")
-    catalog.set_setting(f"path_hint.drive.{_UUID}", "/home/someone/Photos/Backup")
+    catalog.set_setting(f"path_hint.drive.{_UUID}", "/home/user/Photos/Backup")
     catalog.record_uploaded(
-        source_path="/home/someone/Pictures/Holiday/DSC_0001.jpg",
+        source_path="/home/user/Pictures/Holiday/DSC_0001.jpg",
         original_name="DSC_0001.jpg",
         sha256=_SHA,
         copy_sha256=_SHA,
@@ -101,7 +101,7 @@ def test_a_gather_from_a_real_catalog_carries_nothing_sensitive(tmp_path: Path) 
 
     for banned in (
         "path_hint",
-        "/home/someone",
+        "/home/user",
         "DSC_0001",
         "HTC",
         "One M8",
