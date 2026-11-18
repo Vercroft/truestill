@@ -158,7 +158,7 @@ read before it starts, so the decision is yours.
 
 ### From a release (most people)
 
-Download from [Releases](https://github.com/dinesh-ad/truestill/releases) - **Windows** the
+Download from [Releases](https://github.com/Vercroft/truestill/releases) - **Windows** the
 `TruestillSetup-*.exe`, **Linux** the `truestill_*_amd64.deb`, or the portable archive on either
 if you would rather not install:
 
@@ -192,10 +192,13 @@ sha256sum --check --ignore-missing SHA256SUMS
 # 2. those checksums were produced by this repository's release workflow
 cosign verify-blob \
   --bundle SHA256SUMS.sigstore.json \
-  --certificate-identity-regexp '^https://github\.com/dinesh-ad/truestill/\.github/workflows/release\.yml@' \
+  --certificate-identity-regexp '^https://github\.com/(Vercroft|dinesh-ad)/truestill/\.github/workflows/release\.yml@' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
   SHA256SUMS
 ```
+
+The regexp names two owners because v0.1.0 and v0.1.1 were signed before the repository moved to
+Vercroft, and a signature records the owner of its day.
 
 `cosign` is [Sigstore's own tool](https://github.com/sigstore/cosign). Both commands must succeed:
 the first says the bytes are intact, the second says where they came from.
@@ -349,7 +352,7 @@ Truestill is licensed under [PolyForm Strict 1.0.0](LICENSE).
 - Bug reports and ideas are welcome in Issues; code contributions are not accepted.
 
 > **Status:** **published and pre-1.0.** Which release is current is not written here - the
-> [Releases](https://github.com/dinesh-ad/truestill/releases) page and `CHANGELOG.md` are the
+> [Releases](https://github.com/Vercroft/truestill/releases) page and `CHANGELOG.md` are the
 > answer, and [Install](#install) already downloads by glob rather than by number. This README is
 > deliberately factual rather than promotional; the newcomer-facing rewrite with screenshots is a
 > tracked pre-launch task.

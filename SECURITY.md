@@ -5,7 +5,7 @@
 **Please report privately, not in a public issue.**
 
 Use GitHub's private vulnerability reporting: go to the
-[Security tab](https://github.com/dinesh-ad/truestill/security/advisories) → **Report a
+[Security tab](https://github.com/Vercroft/truestill/security/advisories) → **Report a
 vulnerability**. That opens a private advisory visible only to you and the maintainers, and
 lets us work on a fix before anything is public.
 

@@ -1188,7 +1188,7 @@ product behaves as it does; read them as history, not as *what changed for you*.
   `truestill-cli` and `truestill-app`; the import packages are `truestill_core`,
   `truestill_cli` and `truestill_app`; the console commands are `truestill` and
   `truestill-app`; the app's auth header is `X-Truestill-Token`. The repository moved to
-  `github.com/dinesh-ad/truestill`.
+  `github.com/<owner>/truestill`; it is `github.com/Vercroft/truestill` today.
 - Drive markers are now written as `.truestill-drive.json`. **Drives initialised before the
   rename keep working**: `.vaeon-drive.json` is still read, its `uuid`/`label`/`created` are
   preserved verbatim (the uuid is the catalog's foreign key, so re-minting would orphan every
@@ -1248,4 +1248,4 @@ product behaves as it does; read them as history, not as *what changed for you*.
 - Dates come from embedded metadata first, filename convention second, `Undated/`
   never from filesystem mtime.
 
-[Unreleased]: https://github.com/dinesh-ad/truestill
+[Unreleased]: https://github.com/Vercroft/truestill

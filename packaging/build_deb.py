@@ -85,7 +85,7 @@ Priority: optional
 Architecture: {arch}
 Depends: perl, hicolor-icon-theme
 Maintainer: truestill <noreply@truestill.invalid>
-Homepage: https://github.com/dinesh-ad/truestill
+Homepage: https://github.com/Vercroft/truestill
 Description: Local-first photo organizer, de-duplicator and backup pipeline
  Truestill organises a photo library by the date a picture was actually taken,
  finds duplicates, and keeps track of which drives hold which copies.
@@ -106,7 +106,7 @@ Categories=Graphics;Photography;
 
 _COPYRIGHT = """Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: truestill
-Source: https://github.com/dinesh-ad/truestill
+Source: https://github.com/Vercroft/truestill
 
 Files: *
 Copyright: truestill

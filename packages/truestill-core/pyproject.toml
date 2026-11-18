@@ -73,8 +73,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/dinesh-ad/truestill"
-Repository = "https://github.com/dinesh-ad/truestill"
+Homepage = "https://github.com/Vercroft/truestill"
+Repository = "https://github.com/Vercroft/truestill"
 
 [build-system]
 requires = ["hatchling"]

@@ -8,7 +8,7 @@ Truestill is source-available under [PolyForm Strict 1.0.0](LICENSE): free for p
 noncommercial use; business use needs a commercial licence. v0.1.0 and v0.1.1 were released under
 Apache-2.0 and stay so.
 
-- **Bug reports and ideas are welcome** in [Issues](https://github.com/dinesh-ad/truestill/issues).
+- **Bug reports and ideas are welcome** in [Issues](https://github.com/Vercroft/truestill/issues).
   The bug report template asks for what is needed to reproduce.
 - **Code contributions are not accepted.** Pull requests are closed without review.
 - Never report a security problem in public: follow [SECURITY.md](SECURITY.md).
