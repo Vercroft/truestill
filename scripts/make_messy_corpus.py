@@ -32,7 +32,7 @@ seed produce the same manifest. Findings are then citable by (seed, source, comm
 by the day the tree happened to be built.
 
 ⚠ **Two tiers of reproducibility, and the manifest records which one each row came from.**
-``CLAUDE.md`` rules that the two format repos are *"version-controlled and reproducible anywhere,
+The corpus doctrine rules that the two format repos are *"version-controlled and reproducible anywhere,
 so a finding against them is citable by commit"*, while any observation of ``TruestillLibrary`` is
 *"a SNAPSHOT - never a fixture, never a design premise"*. A finding against a row whose source is
 a format repo is reproducible by anyone; one against a personal-photo row is reproducible only on

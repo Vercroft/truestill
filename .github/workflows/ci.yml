@@ -88,11 +88,6 @@ jobs:
     env:
       UV_PYTHON: ${{ matrix.python }}
     steps:
-      # ⚠ DEPTH 1, THE ACTION'S DEFAULT, AND A DECISION RATHER THAN AN OVERSIGHT (P189, 2026-09-02).
-      # `test_closed_entries_leave_the_backlog.py` reads closure trailers out of `git log`; at depth
-      # 1 it read one commit and passed over an empty set, and it now SKIPS here with that reason.
-      # A full checkout (`fetch-depth: 0`) would make it real in CI at ~170 MB per lane per push
-      # (the pack is 169 MiB). Whether that is worth it is the maintainer's call; `(ajs)` carries it.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false

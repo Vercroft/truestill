@@ -214,32 +214,45 @@ def test_the_converter_refuses_rather_than_guessing() -> None:
     assert "no tracked file" in refused[0]
 
 
+#: Modules whose every symbol the converter is run against. Named, not globbed, for the reason
+#: `SHARED_BASENAMES` is: a derivation that returned nothing would pass in silence.
+CONVERTER_CORPUS = (
+    "packages/truestill-core/src/truestill_core/drive.py",
+    "packages/truestill-core/src/truestill_core/scan.py",
+    "packages/truestill-core/src/truestill_core/licence.py",
+    "packages/truestill-app/src/truestill_app/service/backup.py",
+    "packages/truestill-app/src/truestill_app/service/trips.py",
+    "scripts/cite_symbols.py",
+)
+
+
 def test_every_rewrite_the_converter_emits_contains_the_original_line() -> None:
-    """The output assertion, run over the whole live corpus rather than a sample.
+    """The output assertion, over every symbol of the modules above rather than a sample.
 
     This is the property that makes the migration mechanical: a rewrite is emitted only when the
-    symbol it names has a span containing the line the citation used to point at.
+    symbol it names has a span containing the line the citation used to point at. It ran over the
+    line citations of the research records until they left the tree (`CONTRIBUTING.md`, "Removed
+    documents"), so each citation is now made here: one at the first line of a symbol's body and
+    one at its last line, located at runtime.
     """
     tracked = cite.tracked_files()
     checked = 0
 
-    for document in sorted(ROOT.glob("docs/**/*.md")):
-        text = document.read_text(encoding="utf-8")
-        for match in cite.LINE_CITE.finditer(text):
-            raw, low = match.group(1), int(match.group(2))
-            if any(marker in raw for marker in cite.FOREIGN):
-                continue
-            rewritten, refused = cite.convert(match.group(0), tracked)
-            if refused:
-                continue
-            symbol = rewritten.split(":", 1)[1]
-            target, why = cite.resolve(raw, symbol, tracked)
-            assert target is not None, f"{match.group(0)} -> {rewritten}: {why}"
-            span = next(s for s in cite.symbols_for(target) if s.name == symbol)
-            assert span.start <= low <= span.end, (
-                f"{match.group(0)} -> {rewritten} does not contain line {low}"
-            )
-            checked += 1
+    for path in CONVERTER_CORPUS:
+        for span in cite.symbols_for(path):
+            for low in {span.start, span.end}:
+                citation = f"`{path}:{low}`"
+                rewritten, refused = cite.convert(citation, tracked)
+                if refused:
+                    continue
+                symbol = rewritten.strip("`").split(":", 1)[1]
+                target, why = cite.resolve(path, symbol, tracked)
+                assert target is not None, f"{citation} -> {rewritten}: {why}"
+                named = next(s for s in cite.symbols_for(target) if s.name == symbol)
+                assert named.start <= low <= named.end, (
+                    f"{citation} -> {rewritten} does not contain line {low}"
+                )
+                checked += 1
 
     assert checked > 200, f"only {checked} conversions were verified; the corpus scan collapsed"
 

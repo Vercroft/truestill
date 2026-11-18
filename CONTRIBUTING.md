@@ -45,9 +45,9 @@ make e2e-install && make frontend-install          # browsers and npm ci, once
 not committed: `make e2e` builds it first, and a test compares the served bundle's digest with the
 frontend sources.
 
-- **The pre-commit hooks are TEN: `gitleaks` (secrets in the staged changes), ruff, ruff-format,
-  mypy, three prose guards (`dash-style`, `product-name`, `no-redirect-artifacts`), two commit-msg
-  guards (`no-ai-coauthor`, `entry-closure`) and the pre-push `push-gate`. They do not run the suite, and their green
+- **The pre-commit hooks are NINE: `gitleaks` (secrets in the staged changes), ruff, ruff-format,
+  mypy, three prose guards (`dash-style`, `product-name`, `no-redirect-artifacts`), the commit-msg
+  guard `no-ai-coauthor` and the pre-push `push-gate`. They do not run the suite, and their green
   output is not the gate.** `make check` is. The sentence is pinned to `.pre-commit-config.yaml`
   by `test_the_hook_census_is_not_a_guess.py`.
 
@@ -90,8 +90,16 @@ returns zero on a red suite.
 | `.gitleaks.toml`, `.gitleaksignore`, `.pre-commit-config.yaml` | The secret and personal-data rules, the history findings that are not secrets, and the git hooks |
 | `.github/workflows/` | CI with its Gate summary, the release, the secret scan, CodeQL, Scorecard and the link checks |
 | `.github/requirements/` | Hash-pinned CI tools (zizmor) |
-| `.github/ISSUE_TEMPLATE/` | The bug report and idea forms |
+| `.github/ISSUE_TEMPLATE/` | The bug report form and the issue chooser settings |
 | `.github/dependabot.yml` | Monthly grouped updates for the actions, the Python and npm packages and the CI tools |
+
+## Removed documents
+
+The backlog, the project status and shipped list, the research, soak, audit and measurement
+records, the handoffs, the plans for future work and the working guides of the time were removed
+by the decision of 2026-11-17. A comment, test or document that still names one (`docs/BACKLOG.md`,
+`docs/<name>-record.md`, a backlog letter such as `(aje)` with its body
+`docs/research/backlog/aje.md`) refers to git history: `git show 6ef7f911:<path>` prints it.
 
 ## Working rules
 

@@ -24,4 +24,4 @@ distribution, so a distribution shift appears in the first screen of any diff.
 
 The corpus includes the two format repos (`exif-samples`, `metadata-extractor-images`) copied
 under `Input/` - so the snapshot spans format edges as well as one lineage's real library, per
-the corpus doctrine in `CLAUDE.md`.
+the corpus doctrine in `docs/IMPLEMENTATION_STANDARDS.md` §5.

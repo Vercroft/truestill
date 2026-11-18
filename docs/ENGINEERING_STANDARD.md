@@ -216,7 +216,7 @@ memory dressed as one.
 
 > ### What it looks like when this section is working, and what follows if it is not
 >
-> **Added 2026-08-15. The idea is not this repo's** - it comes from a community `CLAUDE.md`
+> **Added 2026-08-15. The idea is not this repo's** - it comes from a community coding
 > guideline set the maintainer was shown, and it is the one thing in it this canon had no answer
 > to. Everything else in that set was already here, twice as strictly in two places.
 >
@@ -284,7 +284,7 @@ rather than one that will. **Read the list, open the member that applies, take t
 member** - a line here is a handle, never the rule itself.
 
 🔑 **Why, measured 2026-09-04 (P209).** This section is **201,872 of this document's 217,631
-bytes - 93%** - and `CLAUDE.md` names the whole file *"Read first, every session"*. That
+bytes - 93%** - and the working guide of the time named the whole file *"Read first, every session"*. That
 instruction plus its three companions costs **~132K tokens** before any work starts; adding what
 the same file says to check before building anything (`BACKLOG.md`, `SHIPPED.md`, the handoff)
 reaches **~287K**, which does not fit in a context window. **The instruction could not be
@@ -686,9 +686,9 @@ and counts are the one thing this section has drifted on repeatedly. Search the 
   summary - gets the wrong answer, and is more confident in it for having checked.
 
   *Worked example - 2026-08-22.* The browser lane was re-decided from `if: false` to nightly.
-  `CLAUDE.md`'s practical reminder was updated in the same commit as the workflow.
-  `IMPLEMENTATION_STANDARDS.md` §6.1 - **the binding rule, which `CLAUDE.md` explicitly points at
-  as binding** - still said the job was disabled *"until the first migrated screen"*, a condition
+  The working guide's practical reminder was updated in the same commit as the workflow.
+  `IMPLEMENTATION_STANDARDS.md` §6.1 - **the binding rule, which the working guide explicitly pointed
+  at as binding** - still said the job was disabled *"until the first migrated screen"*, a condition
   that had been ruled unfireable, for a day. Found by a staleness audit and not by anything
   automatic.
 
@@ -698,8 +698,8 @@ and counts are the one thing this section has drifted on repeatedly. Search the 
 
   ⚠ ✅ **AND THE FIX FOR THAT EXAMPLE REPRODUCED THE MEMBER, ONE LEVEL DOWN, IN THE COMMIT THAT
   RECORDED IT.** `4a6360e` is the staleness audit above; its own message reads *"§6.1 still said
-  the e2e job is `if: false` … That is the BINDING contract and I updated `CLAUDE.md` without
-  it."* It corrected §6.1. **It left four siblings in the same document** - the *Not CI-only*
+  the e2e job is `if: false` … That is the BINDING contract and I updated [the working guide]
+  without it."* It corrected §6.1. **It left four siblings in the same document** - the *Not CI-only*
   paragraph (*"CI runs no browser test at all"*), the *`make gate` is a nudge* paragraph
   (*"nothing currently catches it"*), the `e2e` **CI job** row (`if: false`, *"the first migrated
   screen restores it"*) and the **Browser end-to-end** bullet (*"disabled since 2026-08-20 - today
@@ -716,7 +716,7 @@ and counts are the one thing this section has drifted on repeatedly. Search the 
   enumerable in one command *at the moment of the change*:
 
   ```sh
-  grep -rn 'if: false' docs/ CLAUDE.md .github/   # run BEFORE writing the correction
+  grep -rn 'if: false' docs/ CONTRIBUTING.md .github/   # run BEFORE writing the correction
   ```
 
   ⚠ **AND THAT COMMAND HAS A ONE-WAY EXPIRY, WHICH IS THE NOTE BELOW BITING THE FIX FOR THIS
@@ -742,7 +742,7 @@ and counts are the one thing this section has drifted on repeatedly. Search the 
   ### ⚠ Why there is no doc-to-doc consistency guard, and why that is a decision
 
   *Considered 2026-08-22 for the member above, and refused.* The obvious guard is *"a rule stated
-  in `CLAUDE.md` has a counterpart in the contract, or the reverse"*. **It cannot be written so
+  in the working guide has a counterpart in the contract, or the reverse"*. **It cannot be written so
   that it fails honestly**, for four reasons, and the fourth is fatal on its own:
 
   1. **"Is this sentence a rule?" is not machine-decidable.** Both files are prose. Nothing
@@ -767,7 +767,7 @@ and counts are the one thing this section has drifted on repeatedly. Search the 
   someone was careful.
 
   **So the remedy is structural and already house style: turn a restated fact into the command
-  that produces it.** `CLAUDE.md`'s document-map counts do exactly this - *"a number here rots the
+  that produces it.** The working guide's document-map counts did exactly this - *"a number here rots the
   next time anyone adds a document"* - and they are the reason that section is the one part of
   this corpus that has never been quietly wrong. **Prefer a pointer to a summary; prefer a command
   to a number; and where a summary is genuinely wanted, edit the contract first.**
@@ -1326,7 +1326,8 @@ and counts are the one thing this section has drifted on repeatedly. Search the 
   the identifier would have found all of them, which is what makes this mechanical rather than a
   matter of care.
 
-  **Enforced** by `packages/truestill-app/tests/test_backlog_references.py`: an item in a
+  **Was enforced**, until the backlog left this repository (decision of 2026-11-17), by
+  `packages/truestill-app/tests/test_backlog_references.py`: an item in a
   settled section (built, or out of scope) that another line describes as unfinished. Scoped by
   measurement, not preference - **0** hits before `(aaj)` was closed, **2** at the moment it
   was, **0** after repair - and the phrase list deliberately excludes "remains" and "deferred",

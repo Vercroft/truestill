@@ -291,14 +291,7 @@ def test_no_decommissioned_layout_reference_survives_current_facing_text() -> No
         "fifty-second member: a guard must prove its subject is non-empty first."
     )
 
-    historical_files = {
-        "CHANGELOG.md",
-        "docs/default-layout-research.md",
-        "docs/legacy-decommission-research.md",
-        "docs/org-structure-research.md",
-        "docs/trip-grouping-research.md",
-        "docs/walkthrough-qa-report.md",
-    }
+    historical_files = {"CHANGELOG.md"}
     negative_fixture_files = {
         "packages/truestill-cli/tests/test_config_cli.py",
         "packages/truestill-core/tests/test_layout_scheme.py",

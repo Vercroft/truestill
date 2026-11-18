@@ -97,7 +97,7 @@ CANCEL_OVERRIDE = "TRUESTILL_PUSH_CANCELS_THE_RUN"
 #: refusal. P33 cited the reasoning behind `IMPLEMENTATION_STANDARDS.md` §6.1: a blocking hook
 #: gets `--no-verify`d by a human who can simply try again. The agent now pushes for itself, so
 #: a refusal costs a full round trip while a bounded wait costs minutes of hook time - the
-#: economics reversed with the operator. A push lane measures ~3 minutes (`CLAUDE.md`); the
+#: economics reversed with the operator. A push lane measures ~3 minutes; the
 #: bound is double that plus slack. **At the bound it REFUSES** - never pushes, never cancels -
 #: naming how long it waited, because an unbounded wait is a hang and a hang gets uninstalled.
 CONTENTION_WAIT_SECONDS: Final = 480.0

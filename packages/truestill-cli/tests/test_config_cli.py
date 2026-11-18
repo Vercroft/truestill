@@ -227,10 +227,9 @@ def test_no_removed_preset_name_survives_anywhere_in_the_tree() -> None:
     offenders: list[str] = []
     for relative in tracked:
         path = root / relative
-        # This test names the strings it forbids, and the research docs record the history.
+        # This test names the strings it forbids.
         if path.suffix in {".png", ".jpg", ".ico"} or relative in {
             "packages/truestill-cli/tests/test_config_cli.py",
-            "docs/default-layout-research.md",
         }:
             continue
         # ⚠ **`text_of`, not `read_text`**: this listing is a snapshot and the working tree is

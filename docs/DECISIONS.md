@@ -733,7 +733,7 @@ not a dry run (`release.yml`).
 ## D11. Stay on mypy - and the condition that would change it, restated so it can fire
 
 **Decided 2026-08-21**, replacing a trigger in
-[`frontend-and-shell-standard-research.md`](frontend-and-shell-standard-research.md) that named
+`frontend-and-shell-standard-research.md` that named
 the wrong tool. That file is a record and keeps its original wording; this is the live version.
 
 **The decision is unchanged: mypy strict, in the gate.** The reason is not that the alternatives

@@ -1,6 +1,6 @@
 """The binding contract must state the schema version and the migrations the code actually has.
 
-**The drift this closes.** `IMPLEMENTATION_STANDARDS.md` §3 is the *binding* contract - `CLAUDE.md`
+**The drift this closes.** `IMPLEMENTATION_STANDARDS.md` §3 is the *binding* contract - `CONTRIBUTING.md`
 says it wins on any conflict with another doc or with a code comment - and it had fallen two
 versions behind. It read `CURRENT_SCHEMA_VERSION = 15` while `catalog.py` was on **16**, and its
 migration ledger enumerated v2 to v11, then v14, v13, v12, **never reaching v15 or v16**. A reader

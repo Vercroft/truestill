@@ -23,7 +23,7 @@ been a second vocabulary in a second language - `test_the_rearrange_card_name.py
 name retyped in four places cost. This file pins that no such mapping appears in the script.
 
 **Read as text, per that same precedent**, because the browser lane is not part of the routine
-loop (`CLAUDE.md`). What a text read can prove is that the handlers consult the field and that the
+loop (`CONTRIBUTING.md`). What a text read can prove is that the handlers consult the field and that the
 script maps no kinds of its own; what it cannot prove is that the banner is visible, which is the
 browser lane's question and is stated here rather than implied.
 """

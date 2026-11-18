@@ -169,7 +169,7 @@ ALLOWED: tuple[tuple[str, str], ...] = (
             "is deleted or replaced - and that ruling rests on real products treating restore as "
             "the dangerous direction. Genericised to 'some backup software', the justification "
             "becomes an unsourced claim, which is the summary-instead-of-the-line failure "
-            "CLAUDE.md records. Same standing as the (jj) export-format table: a vendor named to "
+            "CONTRIBUTING.md names. Same standing as the (jj) export-format table: a vendor named to "
             "make a ruling checkable. Scoped to the exact sentence so the name cannot spread."
         ),
     ),

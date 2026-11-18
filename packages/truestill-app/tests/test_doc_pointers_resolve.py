@@ -82,8 +82,9 @@ _SKIP = (
 
 #: Below this the guard is not doing its job. It is a floor against the failure mode where a
 #: path change, a bad glob or a moved test file leaves the corpus empty and the assertion passes
-#: by having nothing to check - `ENGINEERING_STANDARD.md` §4, fifty-second member.
-_MINIMUM_LINKS = 60
+#: by having nothing to check - `ENGINEERING_STANDARD.md` §4, fifty-second member. Measured on
+#: 2026-11-18, after the records left the tree: 11 links across 21 documents (it was 60 before).
+_MINIMUM_LINKS = 8
 
 
 def _root() -> Path:
@@ -167,7 +168,7 @@ def test_every_markdown_link_points_at_something_that_exists() -> None:
 def test_the_guard_is_actually_looking_at_something() -> None:
     """A guard that checks nothing passes for ever, and reads exactly like a guard that works."""
     docs, _ = _corpus()
-    assert len(docs) >= 40, f"only {len(docs)} tracked .md files were collected"
+    assert len(docs) >= 15, f"only {len(docs)} tracked .md files were collected"
     found = sum(
         1
         for text in docs.values()
@@ -201,16 +202,16 @@ def test_the_guard_fails_when_a_link_goes_stale() -> None:
     assert broken_links(live, tracked) == [], "a correct link was reported as broken"
 
     # A link to a DIRECTORY, which resolves against no tracked file but against a tracked
-    # file's parent. `CLAUDE.md` links `docs/research/backlog` exactly this way.
-    directory = {"CLAUDE.md": "the bodies live in [here](docs/research/backlog)"}
+    # file's parent. A root document linking `docs/research/backlog` did exactly this.
+    directory = {"README.md": "the bodies live in [here](docs/research/backlog)"}
     assert broken_links(directory, tracked) == [], (
         "a link to a directory holding tracked files was reported broken - this is the shape "
         "that failed on Windows while passing on Linux and macOS"
     )
 
-    absent_directory = {"CLAUDE.md": "[nope](docs/research/nothing-here)"}
+    absent_directory = {"README.md": "[nope](docs/research/nothing-here)"}
     assert broken_links(absent_directory, tracked) == [
-        ("CLAUDE.md", "docs/research/nothing-here")
+        ("README.md", "docs/research/nothing-here")
     ], "a directory holding nothing tracked must still be reported"
 
     moved = {"docs/BACKLOG.md": "see [aaa](aaa.md)"}

@@ -331,13 +331,13 @@ make e2e           # browser end-to-end suite (opt-in; not part of `make check`)
 deliberately opt-in.
 
 Bug reports and ideas are welcome in Issues; code contributions are not accepted
-([`CONTRIBUTING.md`](CONTRIBUTING.md)). [`CLAUDE.md`](CLAUDE.md) is the day-to-day guide - repo
-shape, what to run, and which document answers which question.
+([`CONTRIBUTING.md`](CONTRIBUTING.md)).
 
 ## Documentation
 
-Start with [`docs/PROJECT_STATUS.md`](docs/PROJECT_STATUS.md): where the project stands, what
-ships next, and the standing rules. [`CLAUDE.md`](CLAUDE.md) carries the full document map.
+[`CONTRIBUTING.md`](CONTRIBUTING.md) is the day-to-day guide: the fresh-clone setup, what to run,
+the repository map and the working rules. `docs/` holds the decisions, the two standards, the
+frontend contract, the design system, performance, brand and user guides.
 
 ## Licence
 
