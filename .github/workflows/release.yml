@@ -564,7 +564,7 @@ jobs:
       # certificate and log entry together, so a verifier needs only the bundle and the file.
       # ONE file is signed - the checksums - because that transitively covers every artifact and
       # gives a user one command to run rather than one per download.
-      - uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22 # v4.1.0
+      - uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
 
       - name: Sign the checksums
         run: cosign sign-blob --yes --bundle out/SHA256SUMS.sigstore.json out/SHA256SUMS
