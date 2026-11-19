@@ -685,7 +685,7 @@ jobs:
       # is a version that disagrees with itself eventually. `engine-strict=true` in the frontend's
       # `.npmrc` turns a mismatch into a hard EBADENGINE rather than a warning nobody reads.
       - name: Set up Node
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: packages/truestill-app/frontend/.nvmrc
           cache: npm
